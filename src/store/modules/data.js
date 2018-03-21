@@ -43,14 +43,14 @@ export default {
     actions: {
       updatedAsideData( { commit ,state }) {
         return new Promise((resolve, reject) => {
-          // http.get(`/sys/menu/${state.communityId}/getByOuterKey`)
-          //   .then(res => {
-          //     let menuList =res.data?a(aside,res.data.spread.split('')) : null;
-          //     commit('UPDATEDASIDEDATA', menuList);
-          //     resolve({msg:'success'})
-          //   }).catch(err => {
-          //     reject(err)
-          //   })
+          http.get(`/sys/menu/${state.communityId}/getByOuterKey`)
+            .then(res => {
+              let menuList =res.data?a(aside,res.data.spread.split('')) : null;
+              commit('UPDATEDASIDEDATA', menuList);
+              resolve({msg:'success'})
+            }).catch(err => {
+              reject(err)
+            })
         } )
       },
       updateDirect( { commit, state }, nav) {

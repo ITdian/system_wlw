@@ -8,7 +8,8 @@
           <input type="text" placeholder="用户名" v-model.trim="phone" autofocus />
         </div>
         <div class="form-item">
-          <input type="password" placeholder="密码" v-model.trim="pwd" />
+          <input type="password" placeholder="密码" v-model.trim="pwd"/>
+          <span class="verCode-btn" @click="setCodeCountdown">{{codeCountdown ? codeCountdown : '获取验证码'}}</span>
         </div>
       </div>
       <div class="footer">
@@ -28,9 +29,13 @@
         pwd: '123456',
         options:[] ,//社区列表
         value: null ,//当前 社区
+        codeCountdown:null,//短信倒计时
       }
     },
     methods: {
+      /**
+       * @description 登录
+       */
       login() {
         if (!this.phone.length || !this.pwd.length) {
           this.$message({
@@ -42,25 +47,44 @@
 
         let loadingInstance = Loading.service();
 
-        this.$xttp.post('user/signIn', {
+        this.$xttp.post('/user/signIn', {
           phone: this.phone,
           pwd: this.pwd
         }).then((res) => {
           this.$store.dispatch('changeToken', res.data);
           if (res.errorCode === 0) {
-            
+
           }
           this.pwd = '';
           loadingInstance.close();
+          this.$router.push('/');
         }).catch(() => {
           loadingInstance.close();
         });
-      }
+      },
+      /**
+       * @description 设置倒数时间
+       */
+      setCodeCountdown(){
+        if ( this.codeCountdown ) return false;
+        this.codeCountdown = 120;
+        let count = 119, timer = setInterval(() => {
+          this.codeCountdown = count;
+          if (count === 0) {
+            this.codeCountdown = null;
+            clearInterval(timer)
+          }
+          count--;
+        }, 1000)
+      },
+    },
+    mounted(){
+
     }
   }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .c-login-container {
     width: 450px;
   }
@@ -100,12 +124,27 @@
     padding-right: 20px;
     padding-top: 10px;
   }
-  .login-area .form .form-item input {
-    border: none;
+  .login-area .form .form-item {
+    display: flex;
     border-bottom: 1px solid #ddd;
-    height: 44px;
-    width: 100%;
-    font-size: 14px;
+    input {
+      border: none;
+      height: 44px;
+      width: 100%;
+      font-size: 14px;
+    }
+    .verCode-btn {
+      width: 30%;
+      font-size: 12px;
+      line-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration:underline;
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 
   .login-area .footer {

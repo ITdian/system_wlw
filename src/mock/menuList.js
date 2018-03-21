@@ -9,7 +9,7 @@ const arr = [
         id:'1-1',
         name:'客户管理',
         show: 1,
-        link:'/home/cusManage/list',
+        link:'/cusManage',
       },
       {
         id:'1-2',

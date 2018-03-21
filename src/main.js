@@ -5,10 +5,12 @@ import App from './App'
 import router from './router'
 import store from './store/'
 import service from './utils/request';
+import validate from './utils/validate/validate';
 
 Vue.prototype.$xttp = service;
 
 Vue.config.productionTip = false;
+Vue.use(validate);
 
 /* eslint-disable no-new */
 new Vue({

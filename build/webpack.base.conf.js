@@ -24,7 +24,7 @@ module.exports = {
       : config.dev.assetsPublicPath
   },
   resolve: {
-    extensions: ['.js', '.vue', '.json'],
+    extensions: ['.js', '.vue', '.json', 'scss'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
@@ -39,6 +39,7 @@ module.exports = {
       },
       {
         test: /\.js$/,
+        exclude: /node_modules/,
         loader: 'babel-loader',
         include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
       },
@@ -69,7 +70,7 @@ module.exports = {
       {
         test: /\.scss$/,
         loaders: ["style", "css", "sass"]
-      }
+      },
     ]
   },
   node: {
