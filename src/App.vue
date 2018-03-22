@@ -27,7 +27,9 @@ export default {
 //          console.log(err)
 //        })
     if (!this.$store.getters.token) {
-      this.$router.push('/auth/login');
+      this.$router.push({
+        name:'login'
+      });
     }
   }
 }
