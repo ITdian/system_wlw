@@ -17,7 +17,7 @@ const router = new Router({
     {
       path: '/home',
       name: 'home',
-      redirect: '/cusManage',
+      redirect: '/contractManage',
     },
   ],basis)
 })

@@ -1,5 +1,17 @@
 //基础管理
 const path = [
+  //合同管理
+  {
+    name:'contractManage',
+    path: '/contractManage',
+    component: (resolve) => require(["@/page/home/basis/contractManage/list"], resolve)
+  },
+  //电梯管理
+  {
+    name:'certificateManage',
+    path: '/certificateManage',
+    // component: (resolve) => require(["@/page/home/basis/contractManage/list"], resolve)
+  },
   //客户管理
   {
     name:'cusManage',
@@ -10,6 +22,12 @@ const path = [
   {
     path: '/projectManage',
     component: (resolve) => require(["@/page/home/basis/projectManage/list"], resolve)
+  },
+  //职工管理
+  {
+    name: 'employeeManage',
+    path: '/employeeManage',
+    // component: (resolve) => require(["@/page/home/basis/projectManage/list"], resolve)
   },
 ]
 

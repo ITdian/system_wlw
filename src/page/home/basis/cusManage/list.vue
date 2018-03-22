@@ -78,9 +78,8 @@
 import myDirect from '@/components/direct'
 import AddPage from "./add";
 import SeePage from "./see";
-
 export default {
-  name: "other",
+  name: "cusManage",
   data() {
     return {
       isSou: false,
