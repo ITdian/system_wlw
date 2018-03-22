@@ -69,7 +69,7 @@
               this.$router.push('/');
             }
             //若密码错误 则记录 超过三次需图片验证码
-            this.pwd = '';
+            this.pwd = '';  
             loadingInstance.close();
           }).catch(() => {
             loadingInstance.close();

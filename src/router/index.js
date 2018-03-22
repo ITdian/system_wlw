@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store';
 import basis from './modules/basis';
+import jobmangement from './modules/jobmangement'
 
 Vue.use(Router)
 
@@ -19,12 +20,13 @@ const router = new Router({
       name: 'home',
       redirect: '/contractManage',
     },
-    ...basis]
+    ...basis,...jobmangement]
 })
 let errorList = ['/home/nav/side/garageport','/home/nav/side/carport','/home/nav/propertyService/onlineService'];//记录暂时没开发的
 router.beforeEach((to, from, next) => {
   //校验是否有权限
   //建议用to.name做比较
+  // console.log(to)
   if(errorList.find((val) => { return val == to.path})) {
     alert('该功能未开发');
     next(false);

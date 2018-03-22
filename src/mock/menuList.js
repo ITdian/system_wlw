@@ -9,7 +9,7 @@ const arr = [
         id:'1-1',
         name:'合同管理',
         show: 1,
-        link:'/contractManage',
+        link:'contractManage',
       },
       {
         id:'1-2',
@@ -28,7 +28,7 @@ const arr = [
         id:'1-3',
         name:'项目管理',
         show: 1,
-        link:'/projectManage',
+        link:'',
       },
       {
         id:'1-3',
@@ -48,19 +48,19 @@ const arr = [
         id:'3-1',
         name:'保养管理',
         show: 1,
-        link:'/home/baseManage/1/list33',
+        link:'/maintaintManage',
       },
       {
         id:'3-2',
         name:'维修管理',
         show: 1,
-        link:'/home/baseManage/3/list333',
+        link:'/repairManage',
       },
       {
         id:'3-3',
         name:'年检管理',
         show: 1,
-        link:'/home/baseManage/4/list333',
+        link:'/annualManage',
       }
     ]
   },
