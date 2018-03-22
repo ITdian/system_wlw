@@ -101,10 +101,15 @@
 
 <style scoped lang="scss">
   .c-login-container {
-    width: 450px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2000;
   }
   .bg {
-    position: fixed;
+    position: absolute;
     left: 0;
     top: 0;
     width: 100%;
@@ -118,11 +123,11 @@
   .login-area {
     width: 420px;
     background-color: #fff;
-    position: fixed;
+    position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: -126px;
-    margin-left: -210px;
+    z-index: 10;
+    transform: translate(-50%,-50%);
   }
 
   .login-area .header h2 {
