@@ -35,7 +35,7 @@ import { mapGetters } from "vuex";
         this.$router.push('/auth/logout');
       },
       handleCommand(command) {
-        
+
       }
     }
   }
@@ -47,7 +47,9 @@ import { mapGetters } from "vuex";
   $headerH: 40px;
   .c-header {
     position: fixed;
+    left: 0;
     top: 0;
+    z-index: 100;
     width: 100%;
     height: $headerH;
     border-bottom: 1px solid hsla(0, 0%, 100%, .15);
