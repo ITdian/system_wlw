@@ -6,7 +6,7 @@
             </el-form-item>
 
             <el-form-item label="社区编号" prop="code" :label-width="formLabelWidth" class="c-must">
-            <el-input v-model="form.code"></el-input>
+            <el-input>ut v-model="form.code"></el-input>
             </el-form-item>
 
             <el-form-item label="地区" prop="cityArr" :label-width="formLabelWidth" class="c-must c-eascader">
