@@ -10,7 +10,7 @@ Validate.install = function (Vue, option) {
             type: 'Promise',//default Promise return-type: Promise/callBack/boolean
             obj: '',//一个inputContent对象
             rules: {},//一个规则对象
-            message: {},//一个提示文案对象
+            msg: {},//一个提示文案对象
             method: {},//校验规则
             duration: 2000,//错误提示显示时间
             success: null,
@@ -98,7 +98,7 @@ Validate.install = function (Vue, option) {
         method = Object.assign(method, args.method || {});
         function startValidate() {
             let _rules = args.rules,
-                _msg = args.message,
+                _msg = args.msg,
                 _obj = args.obj;
             for (let _inputName in _rules) {
                 let _val;
