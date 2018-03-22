@@ -82,6 +82,7 @@
         currentPage:1,
         total:1,
         loading:false,//列表加载loading
+
       }
     },
     methods:{
