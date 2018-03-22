@@ -50,6 +50,13 @@ export default {
       },
       UPDATEDIRECT : (state, newValue ) => {
         state.direct = newValue;
+      },
+      PUSHDIRECT(state, newValue ){
+        state.direct.push(newValue);
+      },
+      POPDIRECT(state, newValue ){
+        state.direct.pop();
+        console.log(state.direct)
       }
     },
     actions: {

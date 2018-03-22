@@ -66,7 +66,6 @@
           this.$xttp.post('/user/signIn', this.form).then(res => {
             if (res.errorCode === 0) {
               this.$store.dispatch('changeToken', res.data);
-
               this.$router.push('/');
             }
             //若密码错误 则记录 超过三次需图片验证码

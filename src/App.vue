@@ -17,7 +17,6 @@ export default {
   name: 'App',
   components:{Header,myAside},
   created() {
-    console.log(666)
     //获取菜单权限
 //      this.$store.dispatch('updatedAsideData')
 //        .then(res => {

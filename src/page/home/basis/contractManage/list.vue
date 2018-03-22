@@ -1,7 +1,7 @@
 <template>
   <el-main>
-    <div>
-      <my-direct></my-direct>
+    <my-direct @click="handleDirectClick"></my-direct>
+    <div v-show="tabIndex === 0" class="page-list">
       <div class="c-search">
         <el-form :inline="true" :model="form" class="demo-form-inline">
           <el-form-item label="客户名称">
@@ -13,79 +13,71 @@
         </el-form>
         <el-button type="primary" class="c-addBtn" @click="add">新增</el-button>
       </div>
+      <el-table :data="tableData" style="width: 100%" v-loading="loading">
+        <el-table-column label="合同编号" :show-overflow-tooltip="true" width="130" align="center">
+          <template slot-scope="scope">{{ scope.row.name }}</template>
+        </el-table-column>
+        <el-table-column label="客户名称" :show-overflow-tooltip="true" align="center">
+          <template slot-scope="scope">{{ scope.row.keyType }}</template>
+        </el-table-column>
+
+        <el-table-column label="合同类型" :show-overflow-tooltip="true" align="center" width="100">
+          <template slot-scope="scope">{{ scope.row.test }}</template>
+        </el-table-column>
+
+        <el-table-column label="签约日期" :show-overflow-tooltip="true" align="center">
+          <template slot-scope="scope">{{ scope.row.phone }}</template>
+        </el-table-column>
+
+        <el-table-column label="项目数" :show-overflow-tooltip="true" align="center" width="200">
+          <template slot-scope="scope">{{ scope.row.roomName }}</template>
+        </el-table-column>
+
+        <el-table-column label="电梯数" :show-overflow-tooltip="true" align="center" width="170">
+          <template slot-scope="scope">{{ scope.row.number }}</template>
+        </el-table-column>
+
+        <el-table-column label="维保负责人" :show-overflow-tooltip="true" align="center" width="170">
+          <template slot-scope="scope">{{ scope.row.number }}</template>
+        </el-table-column>
+
+        <el-table-column label="首次保养时间" :show-overflow-tooltip="true" align="center" width="170">
+          <template slot-scope="scope">{{ scope.row.number }}</template>
+        </el-table-column>
+
+        <el-table-column label="结束时间" :show-overflow-tooltip="true" align="center" width="170">
+          <template slot-scope="scope">{{ scope.row.number }}</template>
+        </el-table-column>
+
+        <el-table-column label="操作" width="80" fixed="right">
+          <template slot-scope="scope">
+            <el-button @click="edit(scope.row)" type="primary" size="small">编辑</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+      <div class="c-block">
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="10"
+          layout="total, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
+      </div>
     </div>
-    <el-table :data="tableData" style="width: 100%" v-loading="loading">
-      <el-table-column label="合同编号" :show-overflow-tooltip="true" width="130" align="center">
-        <template slot-scope="scope">{{ scope.row.name }}</template>
-      </el-table-column>
-      <el-table-column label="客户名称" :show-overflow-tooltip="true" align="center">
-        <template slot-scope="scope">{{ scope.row.keyType }}</template>
-      </el-table-column>
-
-      <el-table-column label="合同类型" :show-overflow-tooltip="true" align="center" width="100">
-        <template slot-scope="scope">{{ scope.row.test }}</template>
-      </el-table-column>
-
-      <el-table-column label="签约日期" :show-overflow-tooltip="true" align="center">
-        <template slot-scope="scope">{{ scope.row.phone }}</template>
-      </el-table-column>
-
-      <el-table-column label="项目数" :show-overflow-tooltip="true" align="center" width="200">
-        <template slot-scope="scope">{{ scope.row.roomName }}</template>
-      </el-table-column>
-
-      <el-table-column label="电梯数" :show-overflow-tooltip="true" align="center" width="170">
-        <template slot-scope="scope">{{ scope.row.number }}</template>
-      </el-table-column>
-
-      <el-table-column label="维保负责人" :show-overflow-tooltip="true" align="center" width="170">
-        <template slot-scope="scope">{{ scope.row.number }}</template>
-      </el-table-column>
-
-      <el-table-column label="首次保养时间" :show-overflow-tooltip="true" align="center" width="170">
-        <template slot-scope="scope">{{ scope.row.number }}</template>
-      </el-table-column>
-
-      <el-table-column label="结束时间" :show-overflow-tooltip="true" align="center" width="170">
-        <template slot-scope="scope">{{ scope.row.number }}</template>
-      </el-table-column>
-
-      <el-table-column label="操作" width="80" fixed="right">
-        <template slot-scope="scope">
-          <el-button @click="edit(scope.row)" type="primary" size="small">编辑</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <div class="c-block">
-      <el-pagination
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="10"
-        layout="total, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
-    </div>
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible"
-      width="30%"
-      :before-close="handleClose">
-      <span>这是一段信息</span>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-    </el-dialog>
+    <add :show="tabIndex === 1" type="edit"></add>
   </el-main>
 </template>
 <script>
-  import myDirect from '@/components/direct'
+  import myDirect from '@/components/direct';
+  import add from './add';
   export default {
     name: 'contractManage',
-    components: {myDirect},
+    components: {myDirect,add},
     data(){
       return {
-        msg: 'hello',
+        tab:['','新增合同','编辑合同'],
+        tabIndex:0,
         tableData: [],
         form: {
           name: ''
@@ -93,8 +85,15 @@
         currentPage: 1,
         total: 1,
         loading: false,//列表加载loading
-        dialogVisible:true,
-
+      }
+    },
+    watch:{
+      tabIndex(newVal){
+        if (newVal > 0) {
+          this.$store.commit('PUSHDIRECT',this.tab[this.tabIndex])
+        } else {
+          this.$store.commit('POPDIRECT');
+        }
       }
     },
     methods: {
@@ -102,7 +101,7 @@
        * @description 新增
        */
       add(){
-        console.log('新增')
+        this.tabIndex = 1;
       },
       /**
        * @description 查找
@@ -125,6 +124,9 @@
       },
       handleClose(){
 
+      },
+      handleDirectClick(){
+        this.tabIndex = 0;
       }
     }
   }
@@ -138,5 +140,9 @@
       right: 0px;
       top: 0px;
     }
+  }
+  .page-list {
+    width: 100%;
+    height: 100%;
   }
 </style>
