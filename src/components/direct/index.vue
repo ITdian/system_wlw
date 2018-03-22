@@ -8,13 +8,10 @@
 </template>
 <script>
 import { mapGetters } from 'vuex';
-
 export default {
     name:'myDirect',
-    data:() => {
-        return {
-
-        }
+    data(){
+        return {}
     },
     computed:mapGetters(['direct'])
 }

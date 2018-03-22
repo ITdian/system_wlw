@@ -29,7 +29,6 @@ router.beforeEach((to, from, next) => {
     alert('该功能未开发');
     next(false);
   }else {
-    console.log(to)
     store.dispatch('updateDirect',to.path);
     next();
   }

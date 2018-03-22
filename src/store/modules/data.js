@@ -1,7 +1,22 @@
 import aside from '@/mock/menuList';
 import http from '@/utils/request';
-// import directData from '@/mock/direct-data';
 const directData = {};
+/**
+ *  将 aside 数据导入directData
+ */
+(()=> {
+  let arr = aside;
+  if(arr.length) {
+    arr.forEach(item1 => {
+      item1.group.forEach(item2 => {
+        directData[item2.link.split('/')[1]] = {
+          parent:item1.name,
+          name:item2.name,
+        }
+      })
+    });
+  }
+})();
 function a() {
   let arr = arguments[0];
   let mockData = arguments[1];
@@ -9,10 +24,6 @@ function a() {
   if(arr.length) {
     arr.forEach(item1 => {
       item1.group.forEach(item2 => {
-        directData[item2.path.split('/')[1]] = {
-          parent:item1.name,
-          name:item2.name,
-        }
         if(mockData[flag]=='1' || mockData[flag] == '0') {
           item2.show = mockData[flag];
           flag++;
@@ -22,7 +33,6 @@ function a() {
   }
   return arr;
 };
-
 export default {
     state: {
       asideData: aside,
@@ -60,7 +70,7 @@ export default {
           let moduleList = nav.split('/');
           let moduleObj = directData[moduleList[1]];
           if(moduleObj) {
-            commit('UPDATEDIRECT',[moduleObj['parent'],moduleObj['name'],moduleObj[moduleList[3]]])
+            commit('UPDATEDIRECT',[moduleObj['parent'],moduleObj['name']])
           }
         }
       }
