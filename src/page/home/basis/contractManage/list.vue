@@ -13,7 +13,7 @@
         </el-form>
         <el-button type="primary" class="c-addBtn" @click="add">新增</el-button>
       </div>
-      <el-table :data="tableData" style="width: 100%" v-loading="loading">
+      <el-table :data="list" style="width: 100%" v-loading="loading">
         <el-table-column label="合同编号" :show-overflow-tooltip="true" width="130" align="center">
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
@@ -55,20 +55,53 @@
           </template>
         </el-table-column>
       </el-table>
-      <div class="c-block">
-        <el-pagination
-          @current-change="handleCurrentChange"
-          :current-page="currentPage"
-          :page-size="10"
-          layout="total, prev, pager, next, jumper"
-          :total="total">
-        </el-pagination>
-      </div>
+      <el-pagination
+        @current-change="handleCurrentChange"
+        :current-page="currentPage"
+        :page-size="size"
+        layout="total, prev, pager, next, jumper"
+        :total="total">
+      </el-pagination>
     </div>
-    <add :show="tabIndex === 1" type="edit"></add>
+    <add :show="tabIndex === 1" :type="tabIndex === 1 ? 'add' : 'edit'"></add>
+    <el-dialog
+      title="查看项目"
+      width="80%"
+      :visible.sync="examineDialog"
+      :before-close="handleClose">
+      <el-table :data="list" style="width: 100%" v-loading="loading">
+        <el-table-column label="项目名称" :show-overflow-tooltip="true" width="130" align="center">
+          <template slot-scope="scope">{{ scope.row.name }}</template>
+        </el-table-column>
+        <el-table-column label="电梯数" :show-overflow-tooltip="true" align="center">
+          <template slot-scope="scope">{{ scope.row.keyType }}</template>
+        </el-table-column>
+        <el-table-column label="项目类型" :show-overflow-tooltip="true" align="center" width="100">
+          <template slot-scope="scope">{{ scope.row.test }}</template>
+        </el-table-column>
+
+        <el-table-column label="项目区域" :show-overflow-tooltip="true" align="center">
+          <template slot-scope="scope">{{ scope.row.phone }}</template>
+        </el-table-column>
+        <el-table-column label="详细地址" :show-overflow-tooltip="true" align="center">
+          <template slot-scope="scope">{{ scope.row.phone }}</template>
+        </el-table-column>
+        <el-table-column label="维保负责人" :show-overflow-tooltip="true" width="130" align="center">
+          <template slot-scope="scope">{{ scope.row.phone }}</template>
+        </el-table-column>
+        <el-table-column label="开始日期" :show-overflow-tooltip="true" align="center">
+          <template slot-scope="scope">{{ scope.row.phone }}</template>
+        </el-table-column>
+        <el-table-column label="结束日期" :show-overflow-tooltip="true" align="center">
+          <template slot-scope="scope">{{ scope.row.phone }}</template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
+
   </el-main>
 </template>
 <script>
+  import {contractHttpUrl} from '../httpUrl';
   import myDirect from '@/components/direct';
   import add from './add';
   export default {
@@ -78,13 +111,15 @@
       return {
         tab:['','新增合同','编辑合同'],
         tabIndex:0,
-        tableData: [],
+        list: [],
         form: {
           name: ''
         },
-        currentPage: 1,
-        total: 1,
+        currentPage: 1,//当前页码
+        total: 1,//总数
+        size: 10,//总页数
         loading: false,//列表加载loading
+        examineDialog:false,//查看
       }
     },
     watch:{
@@ -118,16 +153,32 @@
       },
       /**
        * @description 换页
+       * @param currentPage
        */
-      handleCurrentChange(){
-
+      handleCurrentChange(currentPage){
+        this.currentPage = currentPage;
+        this.get();
       },
       handleClose(){
-
+        this.examineDialog = false;
       },
       handleDirectClick(){
         this.tabIndex = 0;
+      },
+      get(op = {}){
+        this.$xttp.post(contractHttpUrl.list,Object.assign({
+          page:this.currentPage,
+          size:this.size,
+        },op)).then(res=>{
+          if (!res['errorCode']) {
+            this.list = res['data'].records;
+            this.total = res['data'].total;
+          }
+        })
       }
+    },
+    mounted(){
+      this.get();
     }
   }
 </script>

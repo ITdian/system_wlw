@@ -9,7 +9,7 @@ const arr = [
         id:'1-1',
         name:'合同管理',
         show: 1,
-        link:'contractManage',
+        link:'/contractManage',
       },
       {
         id:'1-2',
@@ -28,7 +28,7 @@ const arr = [
         id:'1-3',
         name:'项目管理',
         show: 1,
-        link:'',
+        link:'/projectManage',
       },
       {
         id:'1-3',

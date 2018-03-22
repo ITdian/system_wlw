@@ -1,10 +1,18 @@
-const httpUrl = {
-  cusManage:{
+const cusHttpUrl = {
     list:'',
     add:'',
     edit:'',
     del:'',
-  }，
-  
-};
-export default httpUrl;
+  },
+  contractHttpUrl = {
+    list:'/contract/list',
+    add:'/contract/add',
+    edit:'/contract/edit',
+  },
+  certificateHttpUrl = {
+    list:''
+  },
+  projectHttpUrl = {
+    list:''
+  };
+export {cusHttpUrl,contractHttpUrl,certificateHttpUrl,projectHttpUrl} ;
