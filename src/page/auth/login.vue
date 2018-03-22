@@ -5,7 +5,7 @@
       <div class="header"><h2>后台登录</h2></div>
       <div class="form">
         <div class="form-item">
-          <input type="text" placeholder="用户名" v-model.trim="form.phone" autofocus />
+          <input type="text" placeholder="用户名" v-model.trim="form.mobile" autofocus />
         </div>
         <div class="form-item">
           <input type="password" placeholder="密码" v-model.trim="form.pwd"/>
@@ -26,7 +26,7 @@
     data() {
       return {
         form:{
-          phone: '15918729264',
+          mobile: '15918729264',
           pwd: '123456',
           //添加图片验证码字段
         },
@@ -44,7 +44,7 @@
         this.$Validate({
           obj:this.form,
           rules:{
-            phone:{
+            mobile:{
               required:true,
               isPhone:true,
             },
@@ -53,7 +53,7 @@
             }
           },
           msg:{
-            phone:{
+            mobile:{
               required:'请输入手机号码',
               isPhone:'请输入正确的手机号码',
             },
