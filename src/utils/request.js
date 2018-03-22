@@ -2,7 +2,7 @@ import axios from 'axios';
 import store from '@/store';
 import { Message } from 'element-ui'
 let service = axios.create({
-  baseURL: 'http://apismcm.test.bitiot.com.cn/v1', // api的base_url
+  baseURL: 'http://apielevator.test.bitiot.com.cn/v1', // api的base_url
   // baseURL:'http://192.168.10.151:9000/v1',
   timeout: 5000 // request timeout
 });
@@ -13,7 +13,7 @@ service.interceptors.request.use(config => {
   config.headers['DEVICE-ID'] = 'h5';
   config.headers['DEVICE-TYPE'] = 'h5';
   config.headers['PUSH-ID'] = '10086';
-  config.headers['CLIENT'] = '1002';
+  config.headers['CLIENT'] = '6000';
   config.headers['Content-Type'] = 'application/json';
 
   // token
