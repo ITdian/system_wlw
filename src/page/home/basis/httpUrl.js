@@ -4,6 +4,7 @@ const httpUrl = {
     add:'',
     edit:'',
     del:'',
-  }
+  }，
+  
 };
 export default httpUrl;

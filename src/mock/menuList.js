@@ -15,7 +15,7 @@ const arr = [
         id:'1-2',
         name:'电梯管理',
         show: 1,
-        link:'/certificateManage',
+        link:'/projectManage',
       },
       {
         id:'1-3',
