@@ -5,11 +5,11 @@
       <div class="header"><h2>后台登录</h2></div>
       <div class="form">
         <div class="form-item">
-          <input type="text" placeholder="用户名" v-model.trim="phone" autofocus />
+          <input type="text" placeholder="用户名" v-model.trim="form.phone" autofocus />
         </div>
         <div class="form-item">
-          <input type="password" placeholder="密码" v-model.trim="pwd"/>
-          <span class="verCode-btn" @click="setCodeCountdown">{{codeCountdown ? codeCountdown : '获取验证码'}}</span>
+          <input type="password" placeholder="密码" v-model.trim="form.pwd"/>
+          <!--<span class="verCode-btn" @click="setCodeCountdown">{{codeCountdown ? codeCountdown : '获取验证码'}}</span>-->
         </div>
       </div>
       <div class="footer">
@@ -25,11 +25,15 @@
     name: 'login',
     data() {
       return {
-        phone: '15918729264',
-        pwd: '123456',
+        form:{
+          phone: '15918729264',
+          pwd: '123456',
+          //添加图片验证码字段
+        },
         options:[] ,//社区列表
         value: null ,//当前 社区
         codeCountdown:null,//短信倒计时
+        errorCount:0,//错误次数
       }
     },
     methods: {
@@ -37,30 +41,41 @@
        * @description 登录
        */
       login() {
-        if (!this.phone.length || !this.pwd.length) {
-          this.$message({
-            message: '账号和密码不能为空',
-            type: 'warning'
-          });
-          return;
-        }
-
-        let loadingInstance = Loading.service();
-
-        this.$xttp.post('/user/signIn', {
-          phone: this.phone,
-          pwd: this.pwd
-        }).then((res) => {
-          this.$store.dispatch('changeToken', res.data);
-          if (res.errorCode === 0) {
-
+        this.$Validate({
+          obj:this.form,
+          rules:{
+            phone:{
+              required:true,
+              isPhone:true,
+            },
+            pwd:{
+              required:true,
+            }
+          },
+          msg:{
+            phone:{
+              required:'请输入手机号码',
+              isPhone:'请输入正确的手机号码',
+            },
+            pwd:{
+              required:'请输入密码',
+            }
           }
-          this.pwd = '';
-          loadingInstance.close();
-          this.$router.push('/');
-        }).catch(() => {
-          loadingInstance.close();
-        });
+        }).then(()=>{
+          let loadingInstance = Loading.service();
+          this.$xttp.post('/user/signIn', this.form).then(res => {
+            if (res.errorCode === 0) {
+              this.$store.dispatch('changeToken', res.data);
+
+              this.$router.push('/');
+            }
+            //若密码错误 则记录 超过三次需图片验证码
+            this.pwd = '';
+            loadingInstance.close();
+          }).catch(() => {
+            loadingInstance.close();
+          });
+        })
       },
       /**
        * @description 设置倒数时间

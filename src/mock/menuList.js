@@ -7,49 +7,35 @@ const arr = [
     group:[
       {
         id:'1-1',
+        name:'合同管理',
+        show: 1,
+        link:'/contractManage',
+      },
+      {
+        id:'1-2',
+        name:'电梯管理',
+        show: 1,
+        link:'/certificateManage',
+      },
+      {
+        id:'1-3',
         name:'客户管理',
         tag:'cusManage',
         show: 1,
         link:'/cusManage',
       },
       {
-        id:'1-2',
+        id:'1-3',
         name:'项目管理',
         show: 1,
         link:'/projectManage',
       },
       {
         id:'1-3',
-        name:'技工管理',
+        name:'职工管理',
         show: 1,
-        link:'/home/artisanManage/list',
+        link:'/employeeManage',
       },
-      {
-        id:'1-4',
-        name:'电梯管理',
-        show: 1,
-        link:'/home/liftManage/list',
-      },
-    ]
-  },
-  {
-    id:'2',
-    name:'合同管理',
-    show: 1,
-    icon:'icon-contract',
-    group:[
-      {
-        id:'2-1',
-        name:'合同信息',
-        show: 1,
-        link:'/home/baseManage/customer/list33',
-      },
-      {
-        id:'2-2',
-        name:'应收款',
-        show: 1,
-        link:'/home/baseManage/customer/list333',
-      }
     ]
   },
   {
