@@ -25,7 +25,6 @@ let errorList = ['/home/nav/side/garageport','/home/nav/side/carport','/home/nav
 router.beforeEach((to, from, next) => {
   //校验是否有权限
   //建议用to.name做比较
-  console.log(to)
   if(errorList.find((val) => { return val == to.path})) {
     alert('该功能未开发');
     next(false);

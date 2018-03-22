@@ -31,13 +31,16 @@ export default {
             this.isCollapse = !this.isCollapse;
             this.$store.dispatch("change_aside", !this.isCollapse);
         }
-    }   
+    }
 }
 </script>
 
 <style scoped lang="scss">
+  @import "../../style/mixins";
     .el-aside {
-        color: #333;
+      height: 100%;
+      color: #333;
+      @include optimizationScroll;
     }
     .c-settingMenu {
         height: 41px;
@@ -50,6 +53,6 @@ export default {
         border-bottom: 0.2px solid #312525;
     }
     .c-aside-title {
-        color: #909399;
+      color: #909399;
     }
 </style>

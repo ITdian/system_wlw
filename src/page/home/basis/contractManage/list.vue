@@ -30,23 +30,23 @@
         <template slot-scope="scope">{{ scope.row.phone }}</template>
       </el-table-column>
 
-      <el-table-column label="项目数" :show-overflow-tooltip="true" align="center"  width="200">
+      <el-table-column label="项目数" :show-overflow-tooltip="true" align="center" width="200">
         <template slot-scope="scope">{{ scope.row.roomName }}</template>
       </el-table-column>
 
-      <el-table-column label="电梯数" :show-overflow-tooltip="true" align="center"  width="170">
+      <el-table-column label="电梯数" :show-overflow-tooltip="true" align="center" width="170">
         <template slot-scope="scope">{{ scope.row.number }}</template>
       </el-table-column>
 
-      <el-table-column label="维保负责人" :show-overflow-tooltip="true" align="center"  width="170">
+      <el-table-column label="维保负责人" :show-overflow-tooltip="true" align="center" width="170">
         <template slot-scope="scope">{{ scope.row.number }}</template>
       </el-table-column>
 
-      <el-table-column label="首次保养时间" :show-overflow-tooltip="true" align="center"  width="170">
+      <el-table-column label="首次保养时间" :show-overflow-tooltip="true" align="center" width="170">
         <template slot-scope="scope">{{ scope.row.number }}</template>
       </el-table-column>
 
-      <el-table-column label="结束时间" :show-overflow-tooltip="true" align="center"  width="170">
+      <el-table-column label="结束时间" :show-overflow-tooltip="true" align="center" width="170">
         <template slot-scope="scope">{{ scope.row.number }}</template>
       </el-table-column>
 
@@ -65,27 +65,39 @@
         :total="total">
       </el-pagination>
     </div>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose">
+      <span>这是一段信息</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </el-main>
 </template>
 <script>
   import myDirect from '@/components/direct'
   export default {
     name: 'contractManage',
-    components:{myDirect},
+    components: {myDirect},
     data(){
       return {
         msg: 'hello',
-        tableData:[],
-        form:{
-          name:''
+        tableData: [],
+        form: {
+          name: ''
         },
-        currentPage:1,
-        total:1,
-        loading:false,//列表加载loading
+        currentPage: 1,
+        total: 1,
+        loading: false,//列表加载loading
+        dialogVisible:true,
 
       }
     },
-    methods:{
+    methods: {
       /**
        * @description 新增
        */
@@ -109,6 +121,9 @@
        * @description 换页
        */
       handleCurrentChange(){
+
+      },
+      handleClose(){
 
       }
     }

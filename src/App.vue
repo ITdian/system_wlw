@@ -1,12 +1,10 @@
 <template>
   <div id="app">
-    <div class="home_container">
-      <Header></Header>
-      <el-container class="c-container">
-        <my-aside></my-aside>
-        <router-view/>
-      </el-container>
-    </div>
+    <Header></Header>
+    <el-container class="c-container">
+      <my-aside></my-aside>
+      <router-view/>
+    </el-container>
   </div>
 </template>
 
@@ -39,13 +37,17 @@ export default {
 @import './style/common.scss';
 @import './style/cover-elementui.scss';
 @import "./utils/validate/validate_ui.scss";
+@import "./style/mixins";
 #app {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
   min-width: 1000px;
+  height: 100%;
+  @include optimizationScroll;
 }
 .c-container{
+  height: 100%;
   margin-top: 40px;
 }
 .fade-enter-active, .fade-enter-active {

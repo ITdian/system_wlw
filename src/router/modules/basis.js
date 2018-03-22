@@ -10,7 +10,7 @@ const path = [
   {
     name:'certificateManage',
     path: '/certificateManage',
-    // component: (resolve) => require(["@/page/home/basis/contractManage/list"], resolve)
+    component: (resolve) => require(["@/page/home/basis/certificateManage/list"], resolve)
   },
   //客户管理
   {
@@ -27,7 +27,7 @@ const path = [
   {
     name: 'employeeManage',
     path: '/employeeManage',
-    // component: (resolve) => require(["@/page/home/basis/projectManage/list"], resolve)
+    component: (resolve) => require(["@/page/home/basis/certificateManage/list"], resolve)
   },
 ]
 
