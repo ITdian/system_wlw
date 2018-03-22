@@ -8,6 +8,7 @@ const arr = [
       {
         id:'1-1',
         name:'客户管理',
+        tag:'cusManage',
         show: 1,
         link:'/cusManage',
       },
@@ -15,7 +16,7 @@ const arr = [
         id:'1-2',
         name:'项目管理',
         show: 1,
-        link:'/home/projectManage/list',
+        link:'/projectManage',
       },
       {
         id:'1-3',

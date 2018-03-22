@@ -1,53 +1,53 @@
 <template>
     <el-main>
-      <!--<div>-->
-        <!--<my-direct></my-direct>-->
-        <!--<div class="c-search">-->
-          <!--<el-form :inline="true" :model="formInline" class="demo-form-inline">-->
-            <!--<el-form-item label="客户名称">-->
-              <!--<el-input v-model="formInline.name" placeholder="关键字搜索"></el-input>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item>-->
-              <!--<el-button type="primary" @click="find"><i class="iconfont icon-sousuo">&nbsp;</i>查询</el-button>-->
-            <!--</el-form-item>-->
-          <!--</el-form>-->
-          <!--<el-button type="primary" class="c-addBtn" @click="onSubmit">新增</el-button>-->
-        <!--</div>-->
-      <!--</div>-->
-      <!--<el-table :data="tableData" style="width: 100%" v-loading="loading">-->
-        <!--<el-table-column label="序号" width="50" :show-overflow-tooltip="true" align="center">-->
-          <!--<template slot-scope="scope">{{(currentPage-1) * pageSize + scope.$index + 1}}</template>-->
-        <!--</el-table-column>-->
-        <!--<el-table-column label="客户名称" :show-overflow-tooltip="true" width="130" align="center">-->
-          <!--<template slot-scope="scope">{{ scope.row.name }}</template>-->
-        <!--</el-table-column>-->
+      <div>
+        <my-direct></my-direct>
+        <div class="c-search">
+          <el-form :inline="true" :model="formInline" class="demo-form-inline">
+            <el-form-item label="客户名称">
+              <el-input v-model="formInline.name" placeholder="关键字搜索"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="find"><i class="iconfont icon-sousuo">&nbsp;</i>查询</el-button>
+            </el-form-item>
+          </el-form>
+          <el-button type="primary" class="c-addBtn" @click="onSubmit">新增</el-button>
+        </div>
+      </div>
+      <el-table :data="tableData" style="width: 100%" v-loading="loading">
+        <el-table-column label="序号" width="50" :show-overflow-tooltip="true" align="center">
+          <template slot-scope="scope">{{(currentPage-1) * pageSize + scope.$index + 1}}</template>
+        </el-table-column>
+        <el-table-column label="客户名称" :show-overflow-tooltip="true" width="130" align="center">
+          <template slot-scope="scope">{{ scope.row.name }}</template>
+        </el-table-column>
 
-        <!--<el-table-column label="联系人" :show-overflow-tooltip="true" align="center">-->
-          <!--<template slot-scope="scope">{{ scope.row.keyType }}</template>-->
-        <!--</el-table-column>-->
+        <el-table-column label="联系人" :show-overflow-tooltip="true" align="center">
+          <template slot-scope="scope">{{ scope.row.keyType }}</template>
+        </el-table-column>
 
-        <!--<el-table-column label="联系方式" :show-overflow-tooltip="true" align="center" width="100">-->
-          <!--<template slot-scope="scope">{{ scope.row.test }}</template>-->
-        <!--</el-table-column>-->
+        <el-table-column label="联系方式" :show-overflow-tooltip="true" align="center" width="100">
+          <template slot-scope="scope">{{ scope.row.test }}</template>
+        </el-table-column>
 
-        <!--<el-table-column label="办公地址" :show-overflow-tooltip="true" align="center">-->
-          <!--<template slot-scope="scope">{{ scope.row.phone }}</template>-->
-        <!--</el-table-column>-->
+        <el-table-column label="办公地址" :show-overflow-tooltip="true" align="center">
+          <template slot-scope="scope">{{ scope.row.phone }}</template>
+        </el-table-column>
 
-        <!--<el-table-column label="服务项目" :show-overflow-tooltip="true" align="center"  width="200">-->
-          <!--<template slot-scope="scope">{{ scope.row.roomName }}</template>-->
-        <!--</el-table-column>-->
+        <el-table-column label="服务项目" :show-overflow-tooltip="true" align="center"  width="200">
+          <template slot-scope="scope">{{ scope.row.roomName }}</template>
+        </el-table-column>
 
-        <!--<el-table-column label="电梯数" :show-overflow-tooltip="true" align="center"  width="170">-->
-          <!--<template slot-scope="scope">{{ scope.row.number }}</template>-->
-        <!--</el-table-column>-->
+        <el-table-column label="电梯数" :show-overflow-tooltip="true" align="center"  width="170">
+          <template slot-scope="scope">{{ scope.row.number }}</template>
+        </el-table-column>
 
-        <!--<el-table-column label="操作" width="80" fixed="right">-->
-          <!--<template slot-scope="scope">-->
-            <!--<el-button @click="handleClick(scope.row)" type="primary" size="small">编辑</el-button>-->
-          <!--</template>-->
-        <!--</el-table-column>-->
-      <!--</el-table>-->
+        <el-table-column label="操作" width="80" fixed="right">
+          <template slot-scope="scope">
+            <el-button @click="handleClick(scope.row)" type="primary" size="small">编辑</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
       <div class="c-block">
         <el-pagination
           @current-change="handleCurrentChange"
@@ -70,7 +70,7 @@
             <el-button type="primary" size="mini" @click="confirmDel">确定</el-button>
           </div>
       </el-dialog>
-      <div id="container" style="width:500px; height:300px"></div>
+      <!--<div id="container" style="width:500px; height:300px"></div>-->
     </el-main>
 </template>
 
@@ -195,49 +195,49 @@ export default {
     this.sendAjax();
   },
   mounted() {
-    let map = new AMap.Map('container',{
-      resizeEnable: true
-    }), geolocation, geocoder, marker = new AMap.Marker({map: map});
-    AMap.plugin(['AMap.ToolBar','AMap.Scale','AMap.Geolocation','AMap.Geocoder'],
-      ()=>{
-        map.addControl(new AMap.ToolBar());
-
-        map.addControl(new AMap.Scale());
-
-        geocoder = new AMap.Geocoder();
-
-        geolocation = new AMap.Geolocation({
-          enableHighAccuracy: true,//是否使用高精度定位，默认:true
-          timeout: 10000,          //超过10秒后停止定位，默认：无穷大
-          buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
-          zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
-          buttonPosition:'RB'
-        });
-        map.addControl(geolocation);
-        geolocation.getCurrentPosition();
-      });
-    map.on('click', function(e) {
-      marker.setPosition([e.lnglat.getLng(),e.lnglat.getLat()]);
-      //根据经纬度获得地址
-      geocoder.getAddress([e.lnglat.getLng(),e.lnglat.getLat()], function(status, result) {
-        if (status === 'complete' && result.info === 'OK') {
-          console.log(result.regeocode.formattedAddress);
-          //获得了有效的地址信息:
-          //即，result.regeocode.formattedAddress
-        }else{
-          //获取地址失败
-        }
-      });
-      //根据地址查询经纬度
-      geocoder.getLocation("北京市海淀区苏州街", function(status, result) {
-        if (status === 'complete' && result.info === 'OK') {
-          //TODO:获得了有效经纬度，可以做一些展示工作
-          //比如在获得的经纬度上打上一个Marker
-        }else{
-          //获取经纬度失败
-        }
-      });
-    });
+//    let map = new AMap.Map('container',{
+//      resizeEnable: true
+//    }), geolocation, geocoder, marker = new AMap.Marker({map: map});
+//    AMap.plugin(['AMap.ToolBar','AMap.Scale','AMap.Geolocation','AMap.Geocoder'],
+//      ()=>{
+//        map.addControl(new AMap.ToolBar());
+//
+//        map.addControl(new AMap.Scale());
+//
+//        geocoder = new AMap.Geocoder();
+//
+//        geolocation = new AMap.Geolocation({
+//          enableHighAccuracy: true,//是否使用高精度定位，默认:true
+//          timeout: 10000,          //超过10秒后停止定位，默认：无穷大
+//          buttonOffset: new AMap.Pixel(10, 20),//定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+//          zoomToAccuracy: true,      //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+//          buttonPosition:'RB'
+//        });
+//        map.addControl(geolocation);
+//        geolocation.getCurrentPosition();
+//      });
+//    map.on('click', function(e) {
+//      marker.setPosition([e.lnglat.getLng(),e.lnglat.getLat()]);
+//      //根据经纬度获得地址
+//      geocoder.getAddress([e.lnglat.getLng(),e.lnglat.getLat()], function(status, result) {
+//        if (status === 'complete' && result.info === 'OK') {
+//          console.log(result.regeocode.formattedAddress);
+//          //获得了有效的地址信息:
+//          //即，result.regeocode.formattedAddress
+//        }else{
+//          //获取地址失败
+//        }
+//      });
+//      //根据地址查询经纬度
+//      geocoder.getLocation("北京市海淀区苏州街", function(status, result) {
+//        if (status === 'complete' && result.info === 'OK') {
+//          //TODO:获得了有效经纬度，可以做一些展示工作
+//          //比如在获得的经纬度上打上一个Marker
+//        }else{
+//          //获取经纬度失败
+//        }
+//      });
+//    });
   }
 };
 </script>

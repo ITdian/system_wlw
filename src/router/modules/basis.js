@@ -8,7 +8,7 @@ const path = [
   },
   //项目管理
   {
-    path: 'projectManage',
+    path: '/projectManage',
     component: (resolve) => require(["@/page/home/basis/projectManage/list"], resolve)
   },
 ]

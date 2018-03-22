@@ -10,6 +10,7 @@ import validate from './utils/validate/validate';
 Vue.prototype.$xttp = service;
 
 Vue.config.productionTip = false;
+
 Vue.use(validate);
 
 /* eslint-disable no-new */
