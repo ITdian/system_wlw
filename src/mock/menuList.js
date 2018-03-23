@@ -13,12 +13,6 @@ const arr = [
       },
       {
         id:'1-2',
-        name:'电梯管理',
-        show: 1,
-        link:'/certificateManage',
-      },
-      {
-        id:'1-3',
         name:'客户管理',
         tag:'cusManage',
         show: 1,
@@ -31,10 +25,16 @@ const arr = [
         link:'/projectManage',
       },
       {
-        id:'1-3',
+        id:'1-4',
         name:'职工管理',
         show: 1,
         link:'/employeeManage',
+      },
+      {
+        id:'1-5',
+        name:'电梯管理',
+        show: 1,
+        link:'/certificateManage',
       },
     ]
   },

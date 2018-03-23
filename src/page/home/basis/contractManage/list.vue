@@ -1,17 +1,19 @@
 <template>
   <el-main>
     <my-direct @click="handleDirectClick"></my-direct>
-    <div v-show="tabIndex === 0" class="page-list">
+    <div v-show="!detailType" class="page-list">
       <div class="c-search">
         <el-form :inline="true" :model="form" class="demo-form-inline">
-          <el-form-item label="客户名称">
-            <el-input v-model="form.name" placeholder="关键字搜索"></el-input>
+          <el-form-item>
+            <el-input v-model="form.name" placeholder="客户名称"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="find"><i class="iconfont icon-sousuo">&nbsp;</i>查询</el-button>
+            <el-button type="primary" icon="el-icon-search" @click="find">查询</el-button>
           </el-form-item>
         </el-form>
-        <el-button type="primary" class="c-addBtn" @click="add">新增</el-button>
+        <div class="c-process">
+          <el-button type="primary" @click="add">新增</el-button>
+        </div>
       </div>
       <el-table :data="list" style="width: 100%" v-loading="loading">
         <el-table-column label="合同编号" :show-overflow-tooltip="true" width="130" align="center">
@@ -63,7 +65,7 @@
         :total="total">
       </el-pagination>
     </div>
-    <add :show="tabIndex === 1" :type="tabIndex === 1 ? 'add' : 'edit'"></add>
+    <add :show="detailType" :detail="detail" :type="detailType"></add>
     <el-dialog
       title="查看项目"
       width="80%"
@@ -79,7 +81,6 @@
         <el-table-column label="项目类型" :show-overflow-tooltip="true" align="center" width="100">
           <template slot-scope="scope">{{ scope.row.test }}</template>
         </el-table-column>
-
         <el-table-column label="项目区域" :show-overflow-tooltip="true" align="center">
           <template slot-scope="scope">{{ scope.row.phone }}</template>
         </el-table-column>
@@ -97,7 +98,6 @@
         </el-table-column>
       </el-table>
     </el-dialog>
-
   </el-main>
 </template>
 <script>
@@ -109,8 +109,8 @@
     components: {myDirect,add},
     data(){
       return {
-        tab:['','新增合同','编辑合同'],
-        tabIndex:0,
+        detail:{},
+        detailType:null,//add edit see
         list: [],
         form: {
           name: ''
@@ -122,34 +122,30 @@
         examineDialog:false,//查看
       }
     },
-    watch:{
-      tabIndex(newVal){
-        if (newVal > 0) {
-          this.$store.commit('PUSHDIRECT',this.tab[this.tabIndex])
-        } else {
-          this.$store.commit('POPDIRECT');
-        }
-      }
-    },
     methods: {
       /**
        * @description 新增
        */
       add(){
-        this.tabIndex = 1;
+        this.detailType = 'add';
+      },
+      see(row){
+        this.detailType = 'see';
+        this.detail = row;
       },
       /**
        * @description 查找
        */
       find(){
-
+        this.detailType = 'see';
       },
       /**
        * @description 编辑
        * @param row 行数据
        */
       edit(row){
-
+        this.detailType = 'edit';
+        this.detail = row;
       },
       /**
        * @description 换页
@@ -163,7 +159,7 @@
         this.examineDialog = false;
       },
       handleDirectClick(){
-        this.tabIndex = 0;
+        this.detailType = null;
       },
       get(op = {}){
         this.$xttp.post(contractHttpUrl.list,Object.assign({
@@ -186,7 +182,7 @@
   .c-search {
     position: relative;
     width: 100%;
-    .c-addBtn {
+    .c-process {
       position: absolute;
       right: 0px;
       top: 0px;

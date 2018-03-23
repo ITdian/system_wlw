@@ -4,51 +4,45 @@
     <div class="page-list">
       <div class="c-search">
         <el-form :inline="true" :model="form" class="demo-form-inline">
-          <el-form-item label="客户名称">
-            <el-input v-model="form.name" placeholder="关键字搜索"></el-input>
+          <el-form-item>
+            <el-input v-model="form.name" placeholder="客户名称"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="find"><i class="iconfont icon-sousuo">&nbsp;</i>查询</el-button>
+            <el-button type="primary" icon="el-icon-search" @click="find">查询</el-button>
           </el-form-item>
         </el-form>
-        <el-button type="primary" class="c-addBtn" @click="add">新增</el-button>
+        <div class="c-process">
+          <el-button type="primary" @click="find">导出</el-button>
+          <el-button type="primary" @click="openDialog('add')">新增</el-button>
+        </div>
       </div>
       <el-table :data="list" style="width: 100%" v-loading="loading">
-        <el-table-column label="合同编号" :show-overflow-tooltip="true" width="130" align="center">
+        <el-table-column label="客户名称" :show-overflow-tooltip="true" width="130" align="center">
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
-        <el-table-column label="客户名称" :show-overflow-tooltip="true" align="center">
+        <el-table-column label="联系人" :show-overflow-tooltip="true" align="center">
           <template slot-scope="scope">{{ scope.row.keyType }}</template>
         </el-table-column>
 
-        <el-table-column label="合同类型" :show-overflow-tooltip="true" align="center" width="100">
+        <el-table-column label="联系方式" :show-overflow-tooltip="true" align="center" width="100">
           <template slot-scope="scope">{{ scope.row.test }}</template>
         </el-table-column>
 
-        <el-table-column label="签约日期" :show-overflow-tooltip="true" align="center">
+        <el-table-column label="办公地址" :show-overflow-tooltip="true" align="center">
           <template slot-scope="scope">{{ scope.row.phone }}</template>
         </el-table-column>
 
-        <el-table-column label="项目数" :show-overflow-tooltip="true" align="center" width="200">
+        <el-table-column label="项目服务" :show-overflow-tooltip="true" align="center" width="200">
           <template slot-scope="scope">{{ scope.row.roomName }}</template>
         </el-table-column>
 
-        <el-table-column label="电梯数" :show-overflow-tooltip="true" align="center" width="170">
+        <el-table-column label="签约电梯数" :show-overflow-tooltip="true" align="center" width="170">
           <template slot-scope="scope">{{ scope.row.number }}</template>
         </el-table-column>
 
-        <el-table-column label="维保负责人" :show-overflow-tooltip="true" align="center" width="170">
+        <el-table-column label="在保电梯数" :show-overflow-tooltip="true" align="center" width="170">
           <template slot-scope="scope">{{ scope.row.number }}</template>
         </el-table-column>
-
-        <el-table-column label="首次保养时间" :show-overflow-tooltip="true" align="center" width="170">
-          <template slot-scope="scope">{{ scope.row.number }}</template>
-        </el-table-column>
-
-        <el-table-column label="结束时间" :show-overflow-tooltip="true" align="center" width="170">
-          <template slot-scope="scope">{{ scope.row.number }}</template>
-        </el-table-column>
-
         <el-table-column label="操作" width="80" fixed="right">
           <template slot-scope="scope">
             <el-button @click="edit(scope.row)" type="primary" size="small">编辑</el-button>
@@ -63,47 +57,48 @@
         :total="total">
       </el-pagination>
     </div>
+    <add :show="dialogState" :type="dialogState"></add>
     <el-dialog
-      title="查看项目"
-      width="80%"
-      :visible.sync="dialogState"
-      :before-close="handleClose">
-      <el-table :data="list" style="width: 100%" v-loading="loading">
-        <el-table-column label="项目名称" :show-overflow-tooltip="true" width="130" align="center">
-          <template slot-scope="scope">{{ scope.row.name }}</template>
-        </el-table-column>
-        <el-table-column label="电梯数" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">{{ scope.row.keyType }}</template>
-        </el-table-column>
-        <el-table-column label="项目类型" :show-overflow-tooltip="true" align="center" width="100">
-          <template slot-scope="scope">{{ scope.row.test }}</template>
-        </el-table-column>
-
-        <el-table-column label="项目区域" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">{{ scope.row.phone }}</template>
-        </el-table-column>
-        <el-table-column label="详细地址" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">{{ scope.row.phone }}</template>
-        </el-table-column>
-        <el-table-column label="维保负责人" :show-overflow-tooltip="true" width="130" align="center">
-          <template slot-scope="scope">{{ scope.row.phone }}</template>
-        </el-table-column>
-        <el-table-column label="开始日期" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">{{ scope.row.phone }}</template>
-        </el-table-column>
-        <el-table-column label="结束日期" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">{{ scope.row.phone }}</template>
-        </el-table-column>
-      </el-table>
-    </el-dialog>
+    title="查看项目"
+    width="80%"
+    :visible.sync="dialogVisible"
+    :before-close="closeDialog">
+    <el-table :data="list" style="width: 100%" v-loading="loading">
+      <el-table-column label="项目名称" :show-overflow-tooltip="true" width="130" align="center">
+        <template slot-scope="scope">{{ scope.row.name }}</template>
+      </el-table-column>
+      <el-table-column label="电梯数" :show-overflow-tooltip="true" align="center">
+        <template slot-scope="scope">{{ scope.row.keyType }}</template>
+      </el-table-column>
+      <el-table-column label="项目类型" :show-overflow-tooltip="true" align="center" width="100">
+        <template slot-scope="scope">{{ scope.row.test }}</template>
+      </el-table-column>
+      <el-table-column label="项目区域" :show-overflow-tooltip="true" align="center">
+        <template slot-scope="scope">{{ scope.row.phone }}</template>
+      </el-table-column>
+      <el-table-column label="详细地址" :show-overflow-tooltip="true" align="center">
+        <template slot-scope="scope">{{ scope.row.phone }}</template>
+      </el-table-column>
+      <el-table-column label="维保负责人" :show-overflow-tooltip="true" width="130" align="center">
+        <template slot-scope="scope">{{ scope.row.phone }}</template>
+      </el-table-column>
+      <el-table-column label="开始日期" :show-overflow-tooltip="true" align="center">
+        <template slot-scope="scope">{{ scope.row.phone }}</template>
+      </el-table-column>
+      <el-table-column label="结束日期" :show-overflow-tooltip="true" align="center">
+        <template slot-scope="scope">{{ scope.row.phone }}</template>
+      </el-table-column>
+    </el-table>
+  </el-dialog>
   </el-main>
 </template>
 <script>
   import {cusHttpUrl} from '../httpUrl';
   import myDirect from '@/components/direct';
+  import add from './add';
   export default {
     name: 'cusManage',
-    components: {myDirect},
+    components: {myDirect,add},
     data(){
       return {
         list: [],
@@ -114,34 +109,22 @@
         total: 1,//总数
         size: 10,//总页数
         loading: false,//列表加载loading
-        dialogState:false,//查看
-        dialogType:'add',//add edit see
+        dialogVisible:false,//查看项目
+        dialogState:null,//add edit see
       }
     },
     methods: {
       /**
-       * @description 新增
+       * @description 打开dialog 编辑/新增/查看
        */
-      add(){
-
+      openDialog(type,row){
+        this.dialogState = true;
+        this.dialogType = type;
       },
       /**
        * @description 查找
        */
       find(){
-
-      },
-      /**
-       * @description 编辑
-       * @param row 行数据
-       */
-      edit(row){
-
-      },
-      /**
-       * @description 查看详情
-       */
-      see(){
 
       },
       /**
@@ -152,12 +135,16 @@
         this.currentPage = currentPage;
         this.get();
       },
-      handleClose(){
+      /**
+       * @description 关闭dialog
+       */
+      closeDialog(){
         this.dialogState = false;
       },
-      handleDirectClick(){
-        this.tabIndex = 0;
-      },
+      /**
+       * @description  获取列表数据
+       * @param op http data
+       */
       get(op = {}){
         this.$xttp.post(cusHttpUrl.list,Object.assign({
           page:this.currentPage,
@@ -179,10 +166,10 @@
   .c-search {
     position: relative;
     width: 100%;
-    .c-addBtn {
+    .c-process {
       position: absolute;
-      right: 0px;
-      top: 0px;
+      right: 0;
+      top: 0;
     }
   }
   .page-list {
