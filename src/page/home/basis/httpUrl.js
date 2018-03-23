@@ -1,7 +1,7 @@
 const cusHttpUrl = {
-    list:'',
-    add:'',
-    edit:'',
+    list:'/customer/list',
+    add:'/customer/add',
+    edit:'/customer/edit',
     del:'',
   },
   contractHttpUrl = {
@@ -10,7 +10,8 @@ const cusHttpUrl = {
     edit:'/contract/edit',
   },
   certificateHttpUrl = {
-    list:''
+    list:'/elevator/list',
+    add:'/elevator/add',
   },
   projectHttpUrl = {
     list:''

@@ -27,7 +27,7 @@ const path = [
   {
     name: 'employeeManage',
     path: '/employeeManage',
-    component: (resolve) => require(["@/page/home/basis/certificateManage/list"], resolve)
+    component: (resolve) => require(["@/page/home/basis/employeeManage/list"], resolve)
   },
 ]
 

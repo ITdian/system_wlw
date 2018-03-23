@@ -4,10 +4,38 @@
     width="80%"
     :visible.sync="show"
     :before-close="closeDialog">
+    <el-form :model="form" ref="form" label-width="120px" class="demo-form">
+      <el-form-item label="客户名称" required>
+        <el-input v-model="form.name" :disabled="disabled"></el-input>
+      </el-form-item>
+      <el-form-item label="联系人" required>
+        <el-input v-model="form.name" :disabled="disabled"></el-input>
+      </el-form-item>
+      <el-form-item label="联系方式" required>
+        <el-input v-model="form.name" :disabled="disabled"></el-input>
+      </el-form-item>
+      <el-form-item label="所在地区" required>
+        <el-cascader
+          :options="addressOption"
+          v-model="form.address"
+        ></el-cascader>
+      </el-form-item>
+      <el-form-item label="详细地址" required>
+        <el-input v-model="form.name" :disabled="disabled"></el-input>
+      </el-form-item>
 
+      <el-form-item label="备注">
+        <el-input type="textarea" v-model="form.name" :disabled="disabled"></el-input>
+      </el-form-item>
+
+      <el-form-item v-if="!disabled">
+        <el-button type="primary" @click="">保存</el-button>
+      </el-form-item>
+    </el-form>
   </el-dialog>
 </template>
 <script>
+  import address from '@/utils/citys';
   export default {
     props:{
       show:{
@@ -15,16 +43,27 @@
       },
       type:{
         default:'add',
+      },
+      detail:{
+        name:'',
+        address:null,
       }
     },
     data(){
       return {
-
+        form:{},
+        addressOption:address,
+        addressValue:null
+      }
+    },
+    computed:{
+      disabled(){
+        return this.type === 'see'
       }
     },
     methods:{
       closeDialog(){
-        this.show = false;
+        this.$emit('close')
       }
     }
   }

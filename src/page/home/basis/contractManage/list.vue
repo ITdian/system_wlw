@@ -5,7 +5,20 @@
       <div class="c-search">
         <el-form :inline="true" :model="form" class="demo-form-inline">
           <el-form-item>
+            <el-select v-model="form.type" placeholder="全部类型">
+              <el-option
+                v-for="item in typeOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
             <el-input v-model="form.name" placeholder="客户名称"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="form.name" placeholder="合同编号"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" @click="find">查询</el-button>
@@ -113,8 +126,10 @@
         detailType:null,//add edit see
         list: [],
         form: {
-          name: ''
+          name: '',
+          type:null,
         },
+        typeOption:[],
         currentPage: 1,//当前页码
         total: 1,//总数
         size: 10,//总页数

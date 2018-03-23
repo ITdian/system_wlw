@@ -4,73 +4,83 @@
       <el-form :model="form" ref="form" label-width="120px" class="demo-form">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="合同编号" required>
-              <el-input v-model="form.name" :disabled="disabled"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="合同类型" required>
-              <el-input v-model="form.name" :disabled="disabled"></el-input>
+            <el-form-item label="姓名" required>
+              <el-input v-model="form.name"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="客户名称">
-          <el-select v-model="form.user" placeholder="请选择活动区域" :disabled="disabled">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
-          <el-button type="text" v-if="!disabled">添加</el-button>
-        </el-form-item>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="手机号码" required>
+              <el-input v-model="form.name"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="性别" required>
+              <el-radio-group v-model="form.name">
+                <el-radio :label="0">男</el-radio>
+                <el-radio :label="1">女</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="年龄" required>
+              <el-input v-model="form.name"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="岗位" required>
+              <el-select v-model="value" placeholder="请选择">
+                <el-option
+                  v-for="item in postOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="入行时间">
+              <el-date-picker
+                v-model="form.time"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="操作证">
+              <el-upload
+                class="upload-demo"
+                drag
+                action=""
+                :http-request="uploadFile"
+                multiple>
+                <i class="el-icon-upload"></i>
+                <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+              </el-upload>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="备注">
+              <el-input v-model="form.name"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item>
-          <el-date-picker
-            v-model="time"
-            :disabled="disabled"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="签约日期"
-            end-placeholder="结束日期">
-          </el-date-picker>
-        </el-form-item>
-        <el-form-item label="合同原件">
-          <el-upload
-            v-if="!disabled"
-            action=""
-            :disabled="disabled"
-            list-type="picture-card"
-            :file-list="form.files"
-            :http-request="handleAvatarSuccess"
-            :on-remove="handleRemove">
-            <i class="el-icon-plus"></i>
-          </el-upload>
-          <div v-else class="imgs">
-            <img v-for="item in form.files" :src="item" alt=""/>
-          </div>
-        </el-form-item>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="维保负责人" required>
-              <el-input v-model="form.name" :disabled="disabled"></el-input>
-              <el-button type="text" v-if="!disabled">添加</el-button>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="首次保养时间" required>
-              <el-input v-model="form.name" :disabled="disabled"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="项目名称" required>
-              <el-input v-model="form.name" :disabled="disabled"></el-input>
-              <el-button type="text" v-if="type !== 'see'">添加</el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-form-item v-if="!disabled">
-          添加项目
-        </el-form-item>
-        <el-form-item v-if="!disabled">
           <el-button type="primary" @click="">保存</el-button>
         </el-form-item>
       </el-form>
@@ -98,15 +108,25 @@
             name: 'xxx',
             url: 'xxxxxx'
           }],
+          time:null,
           startTime: null,
           endTime: null,
         },
-        time: null,
+        postOption:[
+          {
+            value:null,
+            label:'维保经理',
+          },
+          {
+            value:null,
+            label:'维修工人',
+          }
+        ],
       }
     },
     computed:{
       typeText(){
-        return this.type === 'add' ? '新增合同' : this.type === 'edit' ? '编辑合同' : '合同详情';
+        return this.type === 'add' ? '新增' : '';
       },
       disabled(){
         return this.type === 'see'
@@ -117,6 +137,9 @@
 
       },
       handleRemove(){
+
+      },
+      uploadFile(file){
 
       }
     },
@@ -154,8 +177,12 @@
 </style>
 <style lang="scss">
   .page-add {
-    .el-form-item__content {
-      display: flex;
+    .el-form-item {
+      &.flex {
+        .el-form-item__content {
+          display: flex;
+        }
+      }
       .el-button--text {
         margin-left: 10px;
       }

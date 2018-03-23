@@ -21,15 +21,15 @@
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
         <el-table-column label="联系人" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">{{ scope.row.keyType }}</template>
+          <template slot-scope="scope">{{ scope.row.contactPerson.name  }}</template>
         </el-table-column>
 
-        <el-table-column label="联系方式" :show-overflow-tooltip="true" align="center" width="100">
-          <template slot-scope="scope">{{ scope.row.test }}</template>
+        <el-table-column label="联系方式" :show-overflow-tooltip="true" align="center">
+          <template slot-scope="scope">{{ scope.row.contactPerson.phone }}</template>
         </el-table-column>
 
         <el-table-column label="办公地址" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">{{ scope.row.phone }}</template>
+          <template slot-scope="scope">{{ scope.row.address }}</template>
         </el-table-column>
 
         <el-table-column label="项目服务" :show-overflow-tooltip="true" align="center" width="200">
@@ -45,7 +45,7 @@
         </el-table-column>
         <el-table-column label="操作" width="80" fixed="right">
           <template slot-scope="scope">
-            <el-button @click="edit(scope.row)" type="primary" size="small">编辑</el-button>
+            <el-button @click="openDialog('edit',scope.row)" type="primary" size="small">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -57,11 +57,11 @@
         :total="total">
       </el-pagination>
     </div>
-    <add :show="dialogState" :type="dialogState"></add>
+    <add :show="dialogState" :type="dialogState" @close="closeDialog"></add>
     <el-dialog
     title="查看项目"
     width="80%"
-    :visible.sync="dialogVisible"
+    :visible.sync="examineDialog"
     :before-close="closeDialog">
     <el-table :data="list" style="width: 100%" v-loading="loading">
       <el-table-column label="项目名称" :show-overflow-tooltip="true" width="130" align="center">
@@ -94,6 +94,7 @@
 </template>
 <script>
   import {cusHttpUrl} from '../httpUrl';
+  import {filterParams} from '../process';
   import myDirect from '@/components/direct';
   import add from './add';
   export default {
@@ -105,11 +106,12 @@
         form: {
           name: ''
         },
+        detail:{},
         currentPage: 1,//当前页码
         total: 1,//总数
         size: 10,//总页数
         loading: false,//列表加载loading
-        dialogVisible:false,//查看项目
+        examineDialog:false,//查看项目
         dialogState:null,//add edit see
       }
     },
@@ -139,17 +141,18 @@
        * @description 关闭dialog
        */
       closeDialog(){
+        this.examineDialog = false;
         this.dialogState = false;
       },
       /**
        * @description  获取列表数据
        * @param op http data
        */
-      get(op = {}){
+      get(){
         this.$xttp.post(cusHttpUrl.list,Object.assign({
           page:this.currentPage,
           size:this.size,
-        },op)).then(res=>{
+        },filterParams(this.form))).then(res=>{
           if (!res['errorCode']) {
             this.list = res['data'].records;
             this.total = res['data'].total;
@@ -158,7 +161,7 @@
       }
     },
     mounted(){
-
+      this.get();
     }
   }
 </script>
