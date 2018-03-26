@@ -3,6 +3,8 @@ import Router from 'vue-router'
 import store from '@/store';
 import basis from './modules/basis';
 import jobmangement from './modules/jobmangement'
+import unioncenter from './modules/unioncenter'
+import warehousemangement from './modules/mountingsmanger'
 
 Vue.use(Router)
 
@@ -20,7 +22,7 @@ const router = new Router({
       name: 'home',
       redirect: '/contractManage',
     },
-    ...basis,...jobmangement]
+    ...basis,...jobmangement,...unioncenter,...warehousemangement]
 })
 let errorList = ['/home/nav/side/garageport','/home/nav/side/carport','/home/nav/propertyService/onlineService'];//记录暂时没开发的
 router.beforeEach((to, from, next) => {

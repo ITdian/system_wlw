@@ -1,22 +1,29 @@
 <template>
+	 <!--保养管理-->
   <el-main>
     <div>
       <my-direct></my-direct>
       <div class="c-search">
         <el-form :inline="true" :model="form" class="demo-form-inline">
-          <el-form-item label="客户名称">
-            <el-input v-model="form.name" placeholder="模糊查询"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="find"><i class="iconfont icon-sousuo">&nbsp;</i>查询</el-button>
-          </el-form-item>
+          <el-select v-model="statusValue" placeholder="请选择">
+            <el-option
+              v-for="item in statusList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          
+          <el-input v-model="inputName" placeholder="请输入项目名"></el-input>
+          <el-input v-model="inputmaintainNum" placeholder="请输入保养单号"></el-input>
+          <el-button type="primary">搜索</el-button>
         </el-form>
         <el-button type="primary" class="c-addBtn" @click="add">新增</el-button>
       </div>
     </div>
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
       <el-table-column label="保养单号" :show-overflow-tooltip="true" width="130" align="center">
-        <template slot-scope="scope">{{}}</template>
+        <template slot-scope="scope">{{scope.row.age}}</template>
       </el-table-column>
       <el-table-column label="项目名称" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">{{ scope.row.keyType }}</template>
@@ -50,9 +57,11 @@
         <template slot-scope="scope">{{ scope.row.number }}</template>
       </el-table-column>
 
-      <el-table-column label="操作" width="80" fixed="right">
+      <el-table-column label="操作" width="200" fixed="right" align="center">
         <template slot-scope="scope">
-          <el-button @click="edit(scope.row)" type="primary" size="small">编辑</el-button>
+          <el-button @click="edit(scope.row)" type="primary" size="small" style="margin:0 auto">保养报告</el-button>
+           <el-button @click="edit(scope.row)" type="primary" size="small"
+           style="margin:0 auto">作业图片</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -77,25 +86,23 @@
       return {
         msg: 'hello',
         sendData:{
-        	brandId: "string",
-        	brandName: "string", 
-        	companyId: "string", 
-        	companyName: "string", 
-        	endTime: 0,
-        	equipType:0,
-        	page:0,
-        	size:0,
-        	startTime:0,
-        	templateName:'String'
-        },
-        tableData:[],
+    		  endTime: 0,
+    		  page: 1,
+    		  size: 1,
+    		  startTime: 0,
+    		  templateId: "string"
+    		},
+        tableData:[{phone:222222,age:999},{phone:2222}],
         form:{
           name:''
         },
         currentPage:1,
         total:1,
         loading:false,//列表加载loading
-
+        statusList:[{value:'选项一',label:'全部状态'}],
+        statusValue:'',
+        inputName:'',//输入名称
+        inputmaintainNum:'',//输入保养单号
       }
       // http://apielevator.test.bitiot.com.cn/v1/maintenanceTemplate/list
 
@@ -141,6 +148,7 @@
   .c-search {
     position: relative;
     width: 100%;
+    margin-bottom:13px;
     .c-addBtn {
       position: absolute;
       right: 0px;

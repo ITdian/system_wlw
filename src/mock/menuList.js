@@ -80,13 +80,13 @@ const arr = [
         id:'4-2',
         name:'终端管理',
         show: 1,
-        link:'/home/baseMan4ge/3/list333',
+        link:'/endmangement',
       },
       {
         id:'4-3',
         name:'运行管理',
         show: 1,
-        link:'/home/baseMa2/3/list333',
+        link:'/opereationmangement',
       }
     ]
   },{
@@ -105,13 +105,13 @@ const arr = [
         id:'5-2',
         name:'订单管理',
         show: 1,
-        link:'/home/bas4n4ge/3/list333',
+        link:'/taskmangement',
       },
       {
         id:'5-3',
         name:'库存管理',
         show: 1,
-        link:'/home/b4Ma2/3/list333',
+        link:'/mountingsmangements',
       }
     ]
   },
