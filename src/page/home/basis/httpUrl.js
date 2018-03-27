@@ -14,6 +14,6 @@ const cusHttpUrl = {
     add:'/elevator/add',
   },
   projectHttpUrl = {
-    list:''
+    list:'/house/list'
   };
 export {cusHttpUrl,contractHttpUrl,certificateHttpUrl,projectHttpUrl} ;
