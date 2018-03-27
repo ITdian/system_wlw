@@ -40,8 +40,7 @@
         </el-form>
       </div>
       <div class="map-wrap">
-        <!--<div id="cus-add-container" style="width:350px; height:350px;border-radius: 8px;"></div>-->
-        <my-map ref="myMap" :disabled="disabled" :address="mapAddress" @click="mapClick" @complete="mapComplete"></my-map>
+        <my-map ref="myMap" :disabled="disabled" @click="mapClick" @complete="mapComplete"></my-map>
       </div>
     </div>
   </el-dialog>
