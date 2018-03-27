@@ -21,11 +21,15 @@ const cusHttpUrl = {
     add:'/elevator/add',
   },
   projectHttpUrl = {
+
+    list:'/house/list'
+
   //项目管理
-    list:''
+   
   },
   employeeManage = {
   //职工管理
+
 
   };
 export {cusHttpUrl,contractHttpUrl,certificateHttpUrl,projectHttpUrl,employeeManage};
