@@ -1,68 +1,86 @@
 <template>
-   <!--维修管理-->
+  <!--年检管理-->
   <el-main>
     <div>
       <my-direct></my-direct>
       <div class="c-search">
         <el-form :inline="true" :model="form" class="demo-form-inline">
-            <el-select v-model="statusValue" placeholder="请选择">
-            <el-option
-              v-for="item in statusList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
+<!--全部品牌  -->
+          <el-select v-model="brandvalue" filterable placeholder="全部品牌">
+              <el-option
+                v-for="item in brandoptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
           </el-select>
-           <el-date-picker v-model="datechose" type="daterange"align="right" unlink-panels range-separator="至"start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions2">
+<!-- 全部梯种 -->
+          <el-select v-model="leftvalue" filterable placeholder="全部梯种">
+              <el-option
+                v-for="item in liftoptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+          </el-select>
+<!-- 日期选择 -->
+ <el-date-picker
+      v-model="datevalue"
+      type="daterange"
+      align="right"
+      unlink-panels
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期"
+      :picker-options="pickerOptions2">
     </el-date-picker>
-          <el-input v-model="inputName" placeholder="请输入项目名"></el-input>
-          
-          <el-button type="primary">搜索</el-button>
+
+          <el-input v-model="inputContains" placeholder="配件内容/下单人"></el-input>
+          <el-form-item>
+            <el-button type="primary" @click="find"><i class="iconfont icon-sousuo">&nbsp;</i>查询</el-button>
+          </el-form-item>
         </el-form>
         <el-button type="primary" class="c-addBtn" @click="add">新增</el-button>
       </div>
     </div>
     <el-table :data="tableData" style="width: 100%" v-loading="loading">
-      <el-table-column label="项目名称" :show-overflow-tooltip="true" width="130" align="center">
+      <el-table-column label="订单编号" :show-overflow-tooltip="true" width="130" align="center">
         <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
-      <el-table-column label="地址" :show-overflow-tooltip="true" align="center">
+      <el-table-column label="配件内容" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">{{ scope.row.keyType }}</template>
       </el-table-column>
 
-      <el-table-column label="品牌" :show-overflow-tooltip="true" align="center" width="100">
+      <el-table-column label="关联维保单" :show-overflow-tooltip="true" align="center" width="100">
         <template slot-scope="scope">{{ scope.row.test }}</template>
       </el-table-column>
 
-      <el-table-column label="维保员" :show-overflow-tooltip="true" align="center">
+      <el-table-column label="下单类型" :show-overflow-tooltip="true" align="center">
         <template slot-scope="scope">{{ scope.row.phone }}</template>
       </el-table-column>
 
-      <el-table-column label="维修状态" :show-overflow-tooltip="true" align="center"  width="200">
+      <el-table-column label="下单人" :show-overflow-tooltip="true" align="center"  width="100">
         <template slot-scope="scope">{{ scope.row.roomName }}</template>
       </el-table-column>
 
-      <el-table-column label="召修原因" :show-overflow-tooltip="true" align="center"  width="170">
+      <el-table-column label="总价（元）" :show-overflow-tooltip="true" align="center"  width="143">
         <template slot-scope="scope">{{ scope.row.number }}</template>
       </el-table-column>
 
-      <el-table-column label="召修时间" :show-overflow-tooltip="true" align="center"  width="170">
+      <el-table-column label="下单时间" :show-overflow-tooltip="true" align="center"  width="96">
         <template slot-scope="scope">{{ scope.row.number }}</template>
       </el-table-column>
 
-      <el-table-column label="签字" :show-overflow-tooltip="true" align="center"  width="80">
+      <el-table-column label="订单状态" :show-overflow-tooltip="true" align="center"  width="90">
         <template slot-scope="scope">{{ scope.row.number }}</template>
       </el-table-column>
-<!-- 
-      <el-table-column label="操作" :show-overflow-tooltip="true" align="center"  width="170">
-        <template slot-scope="scope">{{ scope.row.number }}</template>
-      </el-table-column> -->
 
-      <el-table-column label="操作" width="250" fixed="right" align="center">
+      
+
+      <el-table-column label="操作" width="200" fixed="right" align="center">
         <template slot-scope="scope">
-          <el-button @click="edit(scope.row)" type="primary" size="small">维修报告</el-button>
-          <el-button @click="edit(scope.row)" type="primary" size="small">轨迹</el-button>
-          <el-button @click="edit(scope.row)" type="primary" size="small">反馈</el-button>
+          
+          <el-button @click="edit(scope.row)" type="primary" size="small">查看详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -92,12 +110,41 @@
         currentPage:1,
         total:1,
         loading:false,//列表加载loading
-
-        statusList:[{value:'选项一',label:'全部状态'}],
-        statusValue:'',
-        inputName:'',//输入名称
-
-        //日期选择
+        sendData:{},
+        //选择列表品牌
+        brandoptions: [{
+          value: '选项1',
+          label: '全部下单类型'
+        }, {
+          value: '选项2',
+          label: '维保APP'
+        }, {
+          value: '选项3',
+          label: '维保后台'
+        }],
+        brandvalue:'',
+        //全部状态
+         liftoptions: [{
+          value: '选项1',
+          label: '全部状态'
+        }, {
+          value: '选项2',
+          label: '已接单'
+        }, {
+          value: '选项3',
+          label: '已生效'
+        }, {
+          value: '选项4',
+          label: '已发货'
+        },{
+          value: '选项4',
+          label: '已签收'
+        }],
+        liftvalue:'',
+       
+        //配件内容/下单人
+        inputContains:'',
+        //日历
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',
@@ -125,9 +172,7 @@
             }
           }]
         },
-        datechose:''
-       
-
+        datevalue:'',
       }
     },
     methods:{
@@ -155,7 +200,13 @@
        */
       handleCurrentChange(){
 
-      }
+      },
+       getListData(){
+        this.$xttp.post('/maintenanceTemplate/list',...this.sendData).then(res=>{})
+      },
+    },
+    created(){
+      this.getListData()
     }
   }
 </script>
@@ -163,7 +214,6 @@
   .c-search {
     position: relative;
     width: 100%;
-    margin-bottom:13px;
     .c-addBtn {
       position: absolute;
       right: 0px;
