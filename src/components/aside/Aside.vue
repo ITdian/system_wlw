@@ -9,8 +9,7 @@
             <el-menu-item class="test" v-for="(itemGroup) in itemNemu.group" v-bind:key="itemGroup.key" v-if="itemGroup.show == '1'" :index="itemGroup.link" @click="alink(itemGroup)">{{ itemGroup.name  }}</el-menu-item>
             </el-submenu>
         </el-menu>
-
-        </el-aside>
+    </el-aside>
 </template>
 <script>
 import { mapGetters } from "vuex";
@@ -25,7 +24,7 @@ export default {
     computed: mapGetters(["asideData"]),
     methods:{
         alink(item) {
-           
+
             this.$router.push({ path: item.link });
         },
         change() {
@@ -42,6 +41,9 @@ export default {
       height: 100%;
       color: #333;
       @include optimizationScroll;
+      .el-menu {
+        min-height: calc(100% - 41px);
+      }
     }
     .c-settingMenu {
         height: 41px;

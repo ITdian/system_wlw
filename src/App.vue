@@ -47,7 +47,7 @@ export default {
   @include optimizationScroll;
 }
 .c-container{
-  height: 100%;
+  height: calc(100% - 40px);
   margin-top: 40px;
 }
 .fade-enter-active, .fade-enter-active {

@@ -33,19 +33,15 @@
         </el-table-column>
 
         <el-table-column label="项目服务" :show-overflow-tooltip="true" align="center" width="200">
-          <template slot-scope="scope">{{ scope.row.roomName }}</template>
-        </el-table-column>
-
-        <el-table-column label="签约电梯数" :show-overflow-tooltip="true" align="center" width="170">
-          <template slot-scope="scope">{{ scope.row.number }}</template>
+          <template slot-scope="scope" v-if="scope.row.items">{{ scope.row.items  }}个</template>
         </el-table-column>
 
         <el-table-column label="在保电梯数" :show-overflow-tooltip="true" align="center" width="170">
-          <template slot-scope="scope">{{ scope.row.number }}</template>
+          <template slot-scope="scope">{{ scope.row.contractNumber  }}</template>
         </el-table-column>
         <el-table-column label="操作" width="80" fixed="right">
           <template slot-scope="scope">
-            <el-button @click="openDialog('edit',scope.row)" type="primary" size="small">编辑</el-button>
+            <el-button @click="openDialog('see',scope.row)" type="primary" size="small">查看</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -57,7 +53,7 @@
         :total="total">
       </el-pagination>
     </div>
-    <add :show="dialogState" :type="dialogState" @close="closeDialog"></add>
+    <add :show="dialogState" :type="dialogType" :detail="detail" @close="closeDialog"></add>
     <el-dialog
     title="查看项目"
     width="80%"
@@ -112,7 +108,8 @@
         size: 10,//总页数
         loading: false,//列表加载loading
         examineDialog:false,//查看项目
-        dialogState:null,//add edit see
+        dialogState:false,//
+        dialogType:null,//add edit see
       }
     },
     methods: {
@@ -122,6 +119,7 @@
       openDialog(type,row){
         this.dialogState = true;
         this.dialogType = type;
+        this.detail = row || {};
       },
       /**
        * @description 查找

@@ -15,16 +15,16 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="form.brandId" placeholder="品牌"></el-input>
+            <el-input v-model="form.brandName" placeholder="品牌"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="form.name" placeholder="项目名称"></el-input>
+            <el-input v-model="form.houseName" placeholder="项目名称"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="form.name" placeholder="位置"></el-input>
+            <el-input v-model="form.address" placeholder="位置"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="form.elevatorId" placeholder="梯号"></el-input>
+            <el-input v-model="form.elevatorNum" placeholder="梯号"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" @click="find">搜索</el-button>
@@ -47,7 +47,7 @@
           <template slot-scope="scope">{{ scope.row.elevatorNum }}</template>
         </el-table-column>
         <el-table-column label="项目名称" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">{{ scope.row.buildName }}</template>
+          <template slot-scope="scope">{{ scope.row.houseName }}</template>
         </el-table-column>
 
         <el-table-column label="品牌" :show-overflow-tooltip="true" align="center" width="100">
@@ -63,7 +63,7 @@
         </el-table-column>
 
         <el-table-column label="位置" :show-overflow-tooltip="true" align="center" width="200">
-          <template slot-scope="scope">?</template>
+          <template slot-scope="scope">{{scope.row.address}}</template>
         </el-table-column>
 
         <el-table-column label="电梯状态" :show-overflow-tooltip="true" align="center" width="170">
@@ -79,19 +79,23 @@
         </el-table-column>
 
         <el-table-column label="维工1" :show-overflow-tooltip="true" align="center" width="170">
-          <template slot-scope="scope">?</template>
+          <template slot-scope="scope">
+            {{scope.row.maintentanceUsers[0] && scope.row.maintentanceUsers[0].name}}
+          </template>
         </el-table-column>
 
         <el-table-column label="维工2" :show-overflow-tooltip="true" align="center" width="170">
-          <template slot-scope="scope">?</template>
+          <template slot-scope="scope">
+            {{scope.row.maintentanceUsers[1] && scope.row.maintentanceUsers[1].name}}
+          </template>
         </el-table-column>
 
         <el-table-column label="最近保养时间" :show-overflow-tooltip="true" align="center" width="170">
-          <template slot-scope="scope">{{scope.row.lastMaintenanceDate }}</template>
+          <template slot-scope="scope">{{scope.row.preMaintenanceDate }}</template>
         </el-table-column>
 
         <el-table-column label="下次保养时间" :show-overflow-tooltip="true" align="center" width="170">
-          <template slot-scope="scope">?</template>
+          <template slot-scope="scope">{{scope.row.nextMaintenanceDate }}</template>
         </el-table-column>
 
         <el-table-column label="操作" width="80" fixed="right">
@@ -167,14 +171,17 @@
         detailType: null,//add see
         list: [],
         form: {
-          name: null,
           useType : null,//类型
-          brandId:null,//品牌 id?
-          elevatorId:null,//梯号 id?
-          //项目名称
-          //位置
+          brandName:null,//品牌名称
+          houseName:null,//项目名称
+          address:null,//位置
+          elevatorNum :null,//梯号
         },
         typeOption: [
+          {
+            value:null,
+            label:'全部类型'
+          },
           {
             value: 1,
             label: '别墅梯'
@@ -227,7 +234,8 @@
        * @description 查找
        */
       find(){
-        this.detailType = 'see';
+        //this.detailType = 'see';
+        this.get();
       },
       /**
        * @description 编辑
@@ -259,6 +267,7 @@
         this.detailType = null;
       },
       get(){
+        this.loading = true;
         this.$xttp.post(certificateHttpUrl.list, Object.assign({
           page: this.currentPage,
           size: this.size,
@@ -266,8 +275,9 @@
           if (!res['errorCode']) {
             this.list = res['data'].records;
             this.total = res['data'].total;
+            this.loading = false;
           }
-        })
+        }).catch(err => this.loading = false)
       },
       /**
        * @description 导入文件

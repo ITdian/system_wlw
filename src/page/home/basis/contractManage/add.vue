@@ -1,7 +1,8 @@
 <template>
   <transition>
     <div v-if="show" class="page-add">
-      <el-form :model="form" ref="form" label-width="120px" class="demo-form">
+      <el-form :model="form" ref="form" label-width="140px" class="demo-form">
+        <div class="tit">基本信息</div>
         <el-row>
           <el-col :span="8">
             <el-form-item label="合同编号" required>
@@ -9,27 +10,28 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="合同类型" required>
-              <el-input v-model="form.name" :disabled="disabled"></el-input>
+            <el-form-item label="签约日期" required>
+              <el-date-picker
+                v-model="time"
+                type="date"
+                placeholder="选择日期">
+              </el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item label="客户名称">
+        <el-form-item label="客户名称" required>
           <el-select v-model="form.user" placeholder="请选择活动区域" :disabled="disabled">
             <el-option label="区域一" value="shanghai"></el-option>
             <el-option label="区域二" value="beijing"></el-option>
           </el-select>
           <el-button type="text" v-if="!disabled">添加</el-button>
         </el-form-item>
-        <el-form-item>
-          <el-date-picker
-            v-model="time"
-            :disabled="disabled"
-            type="daterange"
-            range-separator="-"
-            start-placeholder="签约日期"
-            end-placeholder="结束日期">
-          </el-date-picker>
+        <el-form-item label="项目名称" required>
+          <el-select v-model="form.user" placeholder="请选择活动区域" :disabled="disabled">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+          <el-button type="text" v-if="!disabled">添加</el-button>
         </el-form-item>
         <el-form-item label="合同原件">
           <el-upload
@@ -46,30 +48,107 @@
             <img v-for="item in form.files" :src="item" alt=""/>
           </div>
         </el-form-item>
+
+        <div class="tit">维保信息</div>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="维保负责人" required>
+            <el-form-item label="服务开始日期" required>
               <el-input v-model="form.name" :disabled="disabled"></el-input>
-              <el-button type="text" v-if="!disabled">添加</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="首次保养时间" required>
+            <el-form-item label="保养类型" required>
               <el-input v-model="form.name" :disabled="disabled"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
-            <el-form-item label="项目名称" required>
+            <el-form-item label="服务结束时间" required>
               <el-input v-model="form.name" :disabled="disabled"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="每月保养次数" required>
+              <el-input v-model="form.name" :disabled="disabled"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="合同年限" required>
+              <el-input v-model="form.name" :disabled="disabled"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="电梯台数" required>
+              <el-input v-model="form.name" :disabled="disabled"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="维保负责人" required>
+              <el-select v-model="form.user" placeholder="请选择活动区域" :disabled="disabled">
+                <el-option label="区域一" value="shanghai"></el-option>
+                <el-option label="区域二" value="beijing"></el-option>
+              </el-select>
               <el-button type="text" v-if="type !== 'see'">添加</el-button>
             </el-form-item>
           </el-col>
         </el-row>
-        <el-form-item v-if="!disabled">
-          添加项目
-        </el-form-item>
+
+        <div class="tit">财务信息</div>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="合同金额（元）" required>
+              <el-input v-model="form.name" :disabled="disabled"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="付款形式" required>
+              <el-radio-group v-model="form.name" :disabled="disabled">
+                <el-radio :label="1">月付</el-radio>
+                <el-radio :label="2">季度付</el-radio>
+                <el-radio :label="3">半年付</el-radio>
+                <el-radio :label="4">年付</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="付款节点" required>
+              <el-radio-group v-model="form.name" :disabled="disabled">
+                <el-radio :label="1">上付</el-radio>
+                <el-radio :label="2">下付</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="月保养金额" required>
+              600.00元
+            </el-form-item>
+          </el-col>
+        </el-row>
+
+        <div class="tit">维保信息</div>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="备注" required>
+              <el-input
+                type="textarea"
+                :rows="2"
+                placeholder="请输入内容"
+                v-model="form.name"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+
         <el-form-item v-if="!disabled">
           <el-button type="primary" @click="">保存</el-button>
         </el-form-item>
@@ -133,6 +212,11 @@
 </script>
 <style lang="scss" scoped>
   .page-add {
+    .tit {
+      height: 56px;
+      display: flex;
+      align-items: center;
+    }
     .imgs {
       width: 100%;
       display: flex;
@@ -154,8 +238,12 @@
 </style>
 <style lang="scss">
   .page-add {
-    .el-form-item__content {
-      display: flex;
+    .el-form-item {
+      &.flex {
+        .el-form-item__content {
+          display: flex;
+        }
+      }
       .el-button--text {
         margin-left: 10px;
       }

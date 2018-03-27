@@ -5,7 +5,25 @@
       <div class="c-search">
         <el-form :inline="true" :model="form" class="demo-form-inline">
           <el-form-item>
-            <el-select v-model="form.type" placeholder="全部类型">
+            <el-autocomplete
+              v-model="form.name"
+              :fetch-suggestions="userSearchAsync"
+              placeholder="全部客户"
+              @select="userSelect"
+            ></el-autocomplete>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="form.type" placeholder="全部项目">
+              <el-option
+              v-for="item in typeOption"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="form.type" placeholder="全部付款方式">
               <el-option
                 v-for="item in typeOption"
                 :key="item.value"
@@ -15,7 +33,24 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="form.name" placeholder="客户名称"></el-input>
+            <el-select v-model="form.type" placeholder="全部保养类型">
+              <el-option
+                v-for="item in typeOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-select v-model="form.type" placeholder="全部">
+              <el-option
+                v-for="item in typeOption"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item>
             <el-input v-model="form.name" placeholder="合同编号"></el-input>
@@ -25,50 +60,51 @@
           </el-form-item>
         </el-form>
         <div class="c-process">
-          <el-button type="primary" @click="add">新增</el-button>
+          <el-button type="primary" @click="openDialog('add')">新增</el-button>
         </div>
       </div>
       <el-table :data="list" style="width: 100%" v-loading="loading">
         <el-table-column label="合同编号" :show-overflow-tooltip="true" width="130" align="center">
-          <template slot-scope="scope">{{ scope.row.name }}</template>
+          <template slot-scope="scope">？</template>
         </el-table-column>
         <el-table-column label="客户名称" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">{{ scope.row.keyType }}</template>
+          <template slot-scope="scope">？</template>
         </el-table-column>
 
-        <el-table-column label="合同类型" :show-overflow-tooltip="true" align="center" width="100">
-          <template slot-scope="scope">{{ scope.row.test }}</template>
+        <el-table-column label="保养类型" :show-overflow-tooltip="true" align="center" width="100">
+          <template slot-scope="scope">？</template>
         </el-table-column>
 
-        <el-table-column label="签约日期" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">{{ scope.row.phone }}</template>
+        <el-table-column label="关联项目" :show-overflow-tooltip="true" align="center">
+          <template slot-scope="scope">？</template>
         </el-table-column>
 
-        <el-table-column label="项目数" :show-overflow-tooltip="true" align="center" width="200">
+        <el-table-column label="付款方式" :show-overflow-tooltip="true" align="center" width="200">
           <template slot-scope="scope">{{ scope.row.roomName }}</template>
-        </el-table-column>
-
-        <el-table-column label="电梯数" :show-overflow-tooltip="true" align="center" width="170">
-          <template slot-scope="scope">{{ scope.row.number }}</template>
         </el-table-column>
 
         <el-table-column label="维保负责人" :show-overflow-tooltip="true" align="center" width="170">
           <template slot-scope="scope">{{ scope.row.number }}</template>
         </el-table-column>
 
-        <el-table-column label="首次保养时间" :show-overflow-tooltip="true" align="center" width="170">
+        <el-table-column label="保养开始时间" :show-overflow-tooltip="true" align="center" width="170">
           <template slot-scope="scope">{{ scope.row.number }}</template>
         </el-table-column>
 
-        <el-table-column label="结束时间" :show-overflow-tooltip="true" align="center" width="170">
+        <el-table-column label="保养结束时间" :show-overflow-tooltip="true" align="center" width="170">
           <template slot-scope="scope">{{ scope.row.number }}</template>
         </el-table-column>
 
-        <el-table-column label="操作" width="80" fixed="right">
+        <el-table-column label="是否到期" :show-overflow-tooltip="true" align="center" width="170">
+          <template slot-scope="scope">{{ scope.row.number }}</template>
+        </el-table-column>
+
+        <el-table-column label="操作" width="100" fixed="right">
           <template slot-scope="scope">
-            <el-button @click="edit(scope.row)" type="primary" size="small">编辑</el-button>
+            <el-button @click="openDialog('see',scope.row)" type="primary" size="small">查看详情</el-button>
           </template>
         </el-table-column>
+
       </el-table>
       <el-pagination
         @current-change="handleCurrentChange"
@@ -122,18 +158,23 @@
     components: {myDirect,add},
     data(){
       return {
-        detail:{},
-        detailType:null,//add edit see
+        typeOption:[],
+        searchTimer:null,//检索下拉获取 定时器
+
+
         list: [],
         form: {
           name: '',
           type:null,
         },
-        typeOption:[],
         currentPage: 1,//当前页码
         total: 1,//总数
         size: 10,//总页数
         loading: false,//列表加载loading
+
+        detail:{},
+        detailType:null,//add edit see
+
         examineDialog:false,//查看
       }
     },
@@ -141,12 +182,9 @@
       /**
        * @description 新增
        */
-      add(){
-        this.detailType = 'add';
-      },
-      see(row){
-        this.detailType = 'see';
-        this.detail = row;
+      openDialog(type,row){
+        this.detailType = type;
+        if (row) this.detail = row;
       },
       /**
        * @description 查找
@@ -170,12 +208,22 @@
         this.currentPage = currentPage;
         this.get();
       },
+      /**
+       * @description 关闭dialog
+       */
       handleClose(){
         this.examineDialog = false;
       },
+      /**
+       * @description 切换面包屑
+       */
       handleDirectClick(){
         this.detailType = null;
       },
+      /**
+       * @description 获取列表数据
+       * @param op
+       */
       get(op = {}){
         this.$xttp.post(contractHttpUrl.list,Object.assign({
           page:this.currentPage,
@@ -186,7 +234,24 @@
             this.total = res['data'].total;
           }
         })
-      }
+      },
+      /**
+       * @description 检索 全部客户
+       */
+      userSearchAsync(queryString,cb){
+        clearTimeout(this.searchTimer);
+        if (queryString.trim() === '') {
+          cb([]);
+          return;
+        }
+        this.searchTimer = setTimeout(() => {
+          //如果没有数据,传入空值
+          //cb([]); cb(res['datas']);
+        }, 500);
+      },
+      userSelect(item){
+        console.log(item)
+      },
     },
     mounted(){
       this.get();
