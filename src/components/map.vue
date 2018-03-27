@@ -19,6 +19,10 @@
       }
     },
     methods:{
+      /**
+       * @description 更新地图显示中心点和标记
+       * @param address
+       */
       updateMap(address){
         if(Array.isArray(address)) {
           this.map.setZoomAndCenter(14,address);
@@ -31,6 +35,10 @@
           })
         }
       },
+      /**
+       * @description 地图更新完毕事件
+       * @param data
+       */
       handleComplete(data){
         if (!this.disabled || !this.initParam.disabled ) {
           this.$emit('complete',{
@@ -41,6 +49,10 @@
           });
         }
       },
+      /**
+       * @description 地图点击事件
+       * @param e
+       */
       handleClick(e){
         if (!this.disabled || !this.initParam.disabled ) {
           this.map.setZoomAndCenter(14, [e.lnglat.getLng(), e.lnglat.getLat()]);
@@ -48,6 +60,11 @@
           this.getAddress([e.lnglat.getLng(),e.lnglat.getLat()]).then(data => this.$emit('click',data))
         }
       },
+      /**
+       * @description 地址 -> 经纬度
+       * @param address
+       * @returns {*}
+       */
       getLocation(address = '广东省广州市荔湾区'){
         if (!this.geocoder) {
           console.warn('please init map geocoder');
@@ -66,6 +83,11 @@
           });
         })
       },
+      /**
+       * @description 经纬度 -> 地址
+       * @param lnglatXY
+       * @returns {*}
+       */
       getAddress(lnglatXY){
         if (!this.geocoder) {
           console.warn('please init map geocoder');
@@ -90,6 +112,9 @@
       }
     },
     mounted(){
+      /**
+       * @description 组件初始化
+       */
       this.$on('mapInit',
         (op) => {
           let _this = this;
@@ -135,7 +160,13 @@
             });
           _this.map.on('click',_this.handleClick);
         });
+      /**
+       * @description 更新地图
+       */
       this.$on('update',this.updateMap);
+      /**
+       * @description 设置disabled
+       */
       this.$on('setDisabled',state => this.disabled = state);
     }
   }

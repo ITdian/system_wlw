@@ -28,10 +28,23 @@
         <el-input type="textarea" v-model="form.name" :disabled="disabled"></el-input>
       </el-form-item>
 
+
       <el-form-item v-if="!disabled">
         <el-button type="primary" @click="">保存</el-button>
       </el-form-item>
     </el-form>
+
+          <el-form-item>
+            <el-button v-if="type === 'add' || selfType === 'edit'" type="primary" @click="handleSave">保存</el-button>
+            <el-button v-if="selfType === 'edit'" type="primary" @click="handleDelete">删除</el-button>
+            <el-button v-if="type === 'see' && selfType !== 'edit'" type="primary" @click="handleEdit">编辑</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
+      <div class="map-wrap">
+        <my-map ref="myMap" :disabled="disabled" @click="mapClick" @complete="mapComplete"></my-map>
+      </div>
+    </div>
   </el-dialog>
 </template>
 <script>
