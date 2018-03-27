@@ -75,7 +75,7 @@ export default {
       updateDirect( { commit, state }, nav) {
         if(nav) {
           let moduleList = nav.split('/');
-          console.log(directData)
+          // console.log(directData)
           let moduleObj = directData[moduleList[1]];
           if(moduleObj) {
             commit('UPDATEDIRECT',[moduleObj['parent'],moduleObj['name']])
