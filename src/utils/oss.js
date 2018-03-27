@@ -26,7 +26,7 @@ export function send(file, success) {
     let now = Date.parse(new Date()) / 1000;
 
     if (!info || info.expire < now + 3) {
-        http.get("/oss/bit-test/policy")
+        http.post("/thirdApp/getWebAssumeRole?bucket=bit-test")
             .then(res => {
                 if (!res.errorCode) {
                     window.localStorage.setItem('uploadInfo', JSON.stringify(res.data));
