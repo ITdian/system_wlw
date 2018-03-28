@@ -123,7 +123,6 @@
             zoom: op.zoom,
             resizeEnable: op.resizeEnable
           });
-          console.log(op)
           _this.marker = new AMap.Marker({map: _this.map});
 
           AMap.plugin(['AMap.ToolBar', 'AMap.Scale', 'AMap.Geolocation'],

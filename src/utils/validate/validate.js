@@ -17,7 +17,7 @@ Validate.install = function (Vue, option) {
             fail :null,
         }, op);
         method = {
-            required: function (val) {
+            required (val) {
                 if (val === null) {
                     return false;
                 }
@@ -26,42 +26,44 @@ Validate.install = function (Vue, option) {
                 }
                 return val.replace(/(^\s*)|(\s*$)/g, "") != '';
             },
-            isPhone: function (val) {
+            isPhone (val) {
                 let result = /^1[0-9]{10}$/.test(val);
                 if (!val || val === '') {
                     result = true;
                 }
                 return result;
             },
-            isNum: function (val) {
+            //大于0 正整数
+            isPosInte(val){
+              let result = /^[0-9]\d*$/.test(val) && val > 0;
+              if (!val || val === '') {
+                result = true;
+              }
+              return result;
+            },
+            isNum (val) {
                 let result = /^[0-9]\d*$/.test(val);
                 if (!val || val === '') {
                     result = true;
                 }
                 return result;
             },
-            isNumAndFloat: function (val) {
+            isNumAndFloat (val) {
                 let result = /^[1-9]\d*$|^0\.\d*$|^[1-9]\d*\.\d*$/.test(val);
                 if (!val || val === '') {
                     result = true;
                 }
                 return result;
             },
-            isNumAndFloatLimit2: function (val) {
-                let result = /^[1-9]\d*$|^0$|^0\.\d{1,2}$|^[1-9]\d*\.\d{1,2}$/.test(val);
-                if (!val || val === '') {
+            isNumAndFloatLimit2 (val) {
+                // let result = /^[1-9]\d*$|^0$|^0\.\d{1,2}$|^[1-9]\d*\.\d{1,2}$/.test(val);
+                let result = /^[1-9]\d*$|^0\.\d{1,2}$|^[1-9]\d*\.\d{1,2}$/.test(val);
+                if ((!val && val !== 0) || val === '') {
                     result = true;
                 }
                 return result;
             },
-            isCashPayNo: function (val) {
-                let result = /^[0-9a-zA-Z-\|_]*$/.test(val);
-                if (!val || val === '') {
-                    result = true;
-                }
-                return result;
-            },
-            isEmptyArray: function (val) {
+            isEmptyArray (val) {
                 return val.length > 0;
             },
             isEmail(val){
@@ -71,7 +73,13 @@ Validate.install = function (Vue, option) {
                 }
                 return result;
             },
-            showMsg: function (msg = '验证脚本使用错误') {
+            //特殊字符
+            specialChat(val){
+              let regEn = /[`~!@#$%^&*()_+<>?:"{},.\/;'[\]]/im,
+                regCn = /[·！#￥（——）：；“”‘、，|《。》？、【】[\]]/im;
+              return (!regEn.test(val) && !regCn.test(val));
+            },
+            showMsg (msg = '验证脚本使用错误') {
                 if (document.getElementsByClassName('vue-toast').length) {
                     // 如果toast还在，则不再执行
                     return;
@@ -113,14 +121,14 @@ Validate.install = function (Vue, option) {
                     _val = _obj[_inputName] !== null ? _obj[_inputName] : '';//若val为null则为''
                 }
                 for (let singleRule in _rules[_inputName]) {
-                    if (_rules[_inputName][singleRule] != true) {//是否进行验证
+                    if (!_rules[_inputName][singleRule]) {//是否进行验证
                         continue;
                     }
                     //验证返回true/false
                     if (method[singleRule](_val)) {//true
                         continue;
                     } else {
-                        method.showMsg(_msg[_inputName][singleRule]);
+                        method.showMsg(_rules[_inputName][singleRule]);
                         // console.log(method[singleRule](_val))
                         return false;
                     }

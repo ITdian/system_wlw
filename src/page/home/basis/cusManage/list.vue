@@ -53,7 +53,7 @@
         :total="total">
       </el-pagination>
     </div>
-    <add :show="dialogState" :type="dialogType" :detail="detail" @close="closeDialog"></add>
+    <add ref="add" @onload="find"></add>
     <el-dialog
     title="查看项目"
     width="80%"
@@ -117,15 +117,17 @@
        * @description 打开dialog 编辑/新增/查看
        */
       openDialog(type,row){
-        this.dialogState = true;
-        this.dialogType = type;
-        this.detail = row || {};
+        this.$refs.add.$emit('show',{
+          type:type,
+          info:row,
+        })
       },
       /**
        * @description 查找
        */
       find(){
-
+        this.currentPage = 1;
+        this.get();
       },
       /**
        * @description 换页
@@ -156,7 +158,7 @@
             this.total = res['data'].total;
           }
         })
-      }
+      },
     },
     mounted(){
       this.get();

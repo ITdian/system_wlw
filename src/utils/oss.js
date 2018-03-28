@@ -26,7 +26,7 @@ export function send(file, success) {
     let now = Date.parse(new Date()) / 1000;
 
     if (!info || info.expire < now + 3) {
-        http.post("/thirdApp/getWebAssumeRole?bucket=bit-test")
+        http.get("/thirdApp/getWebAssumeRole/bit-test")
             .then(res => {
                 if (!res.errorCode) {
                     window.localStorage.setItem('uploadInfo', JSON.stringify(res.data));
@@ -45,7 +45,6 @@ export function send(file, success) {
         })
     }
 }
-
 
 export function getUri(key) {
     let info = window.localStorage.getItem('downloadInfo') == 'undefined' ? null : JSON.parse(window.localStorage.getItem('downloadInfo'));

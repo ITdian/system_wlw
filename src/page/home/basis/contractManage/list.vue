@@ -1,157 +1,159 @@
 <template>
   <el-main>
     <my-direct @click="handleDirectClick"></my-direct>
-    <div v-show="!detailType" class="page-list">
-      <div class="c-search">
-        <el-form :inline="true" :model="form" class="demo-form-inline">
-          <el-form-item>
-            <el-select
-              v-model="form.propertyCompanyName"
-              multiple
-              filterable
-              remote
-              reserve-keyword
-              placeholder="全部客户"
-              :remote-method="userSearchAsync"
-              @blur="selectBlur"
-              :loading="selectLoading">
-              <el-option
-                v-for="item in userOption"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select
-              v-model="form.projectName"
-              multiple
-              filterable
-              remote
-              reserve-keyword
-              placeholder="全部项目"
-              :remote-method="projectSearchAsync"
-              @blur="selectBlur"
-              :loading="selectLoading">
-              <el-option
-                v-for="item in projectOption"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="form.paymentType" placeholder="全部付款方式">
-              <el-option
-                v-for="item in payOption"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="form.contractType" placeholder="全部保养类型">
-              <el-option
-                v-for="item in typeOption"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-select v-model="form.expire" placeholder="全部">
-              <el-option
-                v-for="item in expireOption"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value">
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="form.contractNum" placeholder="合同编号"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" icon="el-icon-search" @click="find">查询</el-button>
-          </el-form-item>
-        </el-form>
-        <div class="c-process">
-          <el-button type="primary" @click="openDialog('add')">新增</el-button>
+    <div class="con-wrap">
+      <div class="list-wrap">
+        <div class="c-search">
+          <el-form :inline="true" :model="form" class="demo-form-inline">
+            <el-form-item>
+              <el-select
+                v-model="form.propertyCompanyName"
+                multiple
+                filterable
+                remote
+                reserve-keyword
+                placeholder="全部客户"
+                :remote-method="userSearchAsync"
+                @blur="selectBlur"
+                :loading="selectLoading">
+                <el-option
+                  v-for="item in userOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-select
+                v-model="form.projectName"
+                multiple
+                filterable
+                remote
+                reserve-keyword
+                placeholder="全部项目"
+                :remote-method="projectSearchAsync"
+                @blur="selectBlur"
+                :loading="selectLoading">
+                <el-option
+                  v-for="item in projectOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-select v-model="form.paymentType" placeholder="全部付款方式">
+                <el-option
+                  v-for="item in payOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-select v-model="form.contractType" placeholder="全部保养类型">
+                <el-option
+                  v-for="item in typeOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-select v-model="form.expire" placeholder="全部">
+                <el-option
+                  v-for="item in expireOption"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-input v-model="form.contractNum" placeholder="合同编号"></el-input>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" icon="el-icon-search" @click="find">查询</el-button>
+            </el-form-item>
+          </el-form>
+          <div class="c-process">
+            <el-button type="primary" @click="openDialog('add')">新增</el-button>
+          </div>
         </div>
+        <el-table :data="list" style="width: 100%" v-loading="loading">
+          <el-table-column label="合同编号" :show-overflow-tooltip="true" align="center">
+            <template slot-scope="scope">{{scope.row.contractNum}}</template>
+          </el-table-column>
+          <el-table-column label="客户名称" :show-overflow-tooltip="true" align="center">
+            <template slot-scope="scope">{{scope.row.contractName}}</template>
+          </el-table-column>
+
+          <el-table-column label="保养类型" :show-overflow-tooltip="true" align="center">
+            <template slot-scope="scope">
+              <span v-if="scope.row.mintenanceMode === 1">半包</span>
+              <span v-if="scope.row.mintenanceMode === 2">大包</span>
+              <span v-if="scope.row.mintenanceMode === 3">清包</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="关联项目" :show-overflow-tooltip="true" align="center">
+            <template slot-scope="scope">
+              <span>{{scope.row.projectNumber}}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="付款方式" :show-overflow-tooltip="true" align="center">
+            <template slot-scope="scope">
+              <span v-if="scope.row.payType === 1">月付</span>
+              <span v-if="scope.row.payType === 2">季度付</span>
+              <span v-if="scope.row.payType === 3">半年付</span>
+              <span v-if="scope.row.payType === 4">年付</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="维保负责人" :show-overflow-tooltip="true" align="center" width="170">
+            <template slot-scope="scope">{{ scope.row.maintenanceUserName}}</template>
+          </el-table-column>
+
+          <el-table-column label="服务开始时间" :show-overflow-tooltip="true" align="center" width="170">
+            <template slot-scope="scope">
+              <span v-if="scope.row.startMaintenanceDate">{{new Date(scope.row.startMaintenanceDate).toLocaleDateString().replace(/\//g,'-')}}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="服务结束时间" :show-overflow-tooltip="true" align="center">
+            <template slot-scope="scope">
+              <span v-if="scope.row.endDate">{{new Date(scope.row.endDate).toLocaleDateString().replace(/\//g,'-')}}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="是否到期" :show-overflow-tooltip="true" align="center">
+            <template slot-scope="scope">
+              <span v-if="scope.row.endDate">{{scope.row.expire}}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column label="操作" width="100" fixed="right">
+            <template slot-scope="scope">
+              <el-button @click="openDialog('see',scope.row)" type="primary" size="small">查看详情</el-button>
+            </template>
+          </el-table-column>
+
+        </el-table>
+        <el-pagination
+          @current-change="handleCurrentChange"
+          :current-page="currentPage"
+          :page-size="size"
+          layout="total, prev, pager, next, jumper"
+          :total="total">
+        </el-pagination>
       </div>
-      <el-table :data="list" style="width: 100%" v-loading="loading">
-        <el-table-column label="合同编号" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">{{scope.row.contractNum}}</template>
-        </el-table-column>
-        <el-table-column label="客户名称" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">{{scope.row.contractName}}</template>
-        </el-table-column>
-
-        <el-table-column label="保养类型" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">
-            <span v-if="scope.row.mintenanceMode === 1">半包</span>
-            <span v-if="scope.row.mintenanceMode === 2">大包</span>
-            <span v-if="scope.row.mintenanceMode === 3">清包</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="关联项目" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">
-            <span>{{scope.row.projectNumber}}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="付款方式" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">
-            <span v-if="scope.row.payType === 1">月付</span>
-            <span v-if="scope.row.payType === 2">季度付</span>
-            <span v-if="scope.row.payType === 3">半年付</span>
-            <span v-if="scope.row.payType === 4">年付</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="维保负责人" :show-overflow-tooltip="true" align="center" width="170">
-          <template slot-scope="scope">{{ scope.row.maintenanceUserName}}</template>
-        </el-table-column>
-
-        <el-table-column label="服务开始时间" :show-overflow-tooltip="true" align="center" width="170">
-          <template slot-scope="scope">
-            <span v-if="scope.row.startMaintenanceDate">{{new Date(scope.row.startMaintenanceDate).toLocaleDateString().replace(/\//g,'-')}}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="服务结束时间" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">
-            <span v-if="scope.row.endDate">{{new Date(scope.row.endDate).toLocaleDateString().replace(/\//g,'-')}}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="是否到期" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">
-            <span v-if="scope.row.endDate">{{scope.row.expire}}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作" width="100" fixed="right">
-          <template slot-scope="scope">
-            <el-button @click="openDialog('see',scope.row)" type="primary" size="small">查看详情</el-button>
-          </template>
-        </el-table-column>
-
-      </el-table>
-      <el-pagination
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-size="size"
-        layout="total, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
+      <add ref="add" @onload="find"></add>
     </div>
-    <add :show="detailType" :info="detail" :type="detailType"></add>
     <el-dialog
       title="查看项目"
       width="80%"
@@ -274,24 +276,23 @@
         size: 10,//总页数
         loading: false,//列表加载loading
 
-        detail:{},
-        detailType:null,//add edit see
-
         examineDialog:false,//查看
       }
     },
     methods: {
       /**
        * @description 新增
+       * @param type add/edit/see
+       * @param row 行数据
        */
       openDialog(type,row){
-        this.detailType = type;
-        if (row) this.detail = row;
+        this.$refs.add.$emit('show',{ type:type,info:row});
       },
       /**
        * @description 查找
        */
       find(){
+        this.currentPage = 1;
         this.get();
       },
       /**
@@ -312,7 +313,7 @@
        * @description 切换面包屑
        */
       handleDirectClick(){
-        this.detailType = null;
+        this.$refs.add.$emit('hide');
       },
       /**
        * @description 获取列表数据
@@ -403,7 +404,10 @@
       top: 0px;
     }
   }
-  .page-list {
+  .con-wrap {
+    position: relative;
+  }
+  .list-wrap {
     width: 100%;
     height: 100%;
   }

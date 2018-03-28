@@ -8,16 +8,21 @@
       <div class="form-wrap">
         <el-form :model="form" ref="form" label-width="120px" class="demo-form">
           <el-form-item label="客户名称" required>
-            <el-input v-model="form.name" :disabled="disabled"></el-input>
+            <span v-if="disabled">{{form.name}}</span>
+            <el-input v-else v-model="form.name"></el-input>
           </el-form-item>
           <el-form-item label="联系人" required>
-            <el-input v-model="form.contactPerson.name" :disabled="disabled"></el-input>
+            <span v-if="disabled">{{form.contactPerson.name}}</span>
+            <el-input v-else v-model="form.contactPerson.name"></el-input>
           </el-form-item>
           <el-form-item label="联系方式" required>
-            <el-input v-model="form.contactPerson.phone" :disabled="disabled"></el-input>
+            <span v-if="disabled">{{form.contactPerson.phone}}</span>
+            <el-input v-else v-model="form.contactPerson.phone"></el-input>
           </el-form-item>
           <el-form-item label="所在地区" required>
+            <span v-if="disabled">{{`${ form['province'] }/${ form['city'] }/${ form['area'] }`}}</span>
             <el-cascader
+              v-else
               :options="addressOption"
               v-model="addressSelect"
               :disabled="disabled"
@@ -25,17 +30,19 @@
             ></el-cascader>
           </el-form-item>
           <el-form-item label="详细地址" required>
-            <el-input v-model="form.address" :disabled="disabled"></el-input>
+            <span v-if="disabled">{{form.address}}</span>
+            <el-input v-else v-model="form.address"></el-input>
           </el-form-item>
 
           <el-form-item label="备注">
-            <el-input type="textarea" v-model="form.remark" :disabled="disabled"></el-input>
+            <span v-if="disabled">{{form.remark ? form.remark : '-'}}</span>
+            <el-input v-else type="textarea" v-model="form.remark"></el-input>
           </el-form-item>
 
           <el-form-item>
-            <el-button v-if="type === 'add' || selfType === 'edit'" type="primary" @click="handleSave">保存</el-button>
-            <el-button v-if="selfType === 'edit'" type="primary" @click="handleDelete">删除</el-button>
-            <el-button v-if="type === 'see' && selfType !== 'edit'" type="primary" @click="handleEdit">编辑</el-button>
+            <el-button v-if="type !== 'see'" type="primary" @click="handleSave">保存</el-button>
+            <el-button v-else type="primary" @click="handleEdit">编辑</el-button>
+            <el-button v-if="type === 'edit'" type="primary" @click="handleDelete">删除</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -48,19 +55,16 @@
 <script>
   import address from '@/utils/citys';
   import map from '@/components/map';
+  import {cusHttpUrl as httpUrl} from '../httpUrl';
+  import {filterParams} from '../process';
   export default {
     components:{'my-map':map},
-    props: {
-      show: {
-        default: false,
-      },
-      type: {},
-      detail: {}
-    },
     data(){
       return {
-        selfShow:false,
-        selfType: null,
+        show:false,
+        type:{},
+        detail:{},
+        info:{},
         addressSelect: ['广东省', '广州市', '天河区'],
         form: {
           address: null,//详细地址
@@ -80,7 +84,6 @@
     },
     computed: {
       disabled(){
-        if (this.selfType === 'edit') return false;
         return this.type === 'see'
       }
     },
@@ -89,17 +92,53 @@
        * @description 保存
        */
       handleSave(){
-        if (this.type === 'add') {//新增
-
-        } else if (this.selfType === 'edit') {//编辑
-
-        }
+        this.$Validate({
+          obj:this.form,
+          rules:{
+            name: {
+              required:'请输入客户名称'
+            },//客户名称
+            address: {
+              required:'请输入详细地址'
+            },//详细地址
+            'contactPerson.name': {
+              required:'请输入联系人姓名',
+            },
+            'contactPerson.phone': {
+              required:'请输入联系人电话',
+              isPhone:'请输入正确的电话号码'
+            },
+          }
+        }).then(()=>{
+          this.type === 'add' ? (this.add()) : (this.edit());
+        });
+      },
+      add(){
+        this.$xttp.post(httpUrl.add,filterParams(this.form))
+          .then(res=>{
+            if(!res['errorCode']) {
+              this.$message.success('新增客户成功');
+              this.$emit('onload');
+              this.show = false;
+            }
+          })
+      },
+      edit(){
+        this.$xttp.post(httpUrl.edit,Object.assign({},filterParams(this.form),{
+          id:this.info.id
+        })).then(res=>{
+            if(!res['errorCode']) {
+              this.$message.success('修改成功');
+              this.$emit('onload');
+              this.show = false;
+            }
+          })
       },
       /**
        * @description 编辑
        */
       handleEdit(){
-        this.selfType = 'edit';
+        this.type = 'edit';
       },
       /**
        * @description 删除
@@ -122,7 +161,7 @@
         });
       },
       closeDialog(){
-        this.$emit('close')
+        this.show = false;
       },
       addressChange(val){
         this.form.province = val[0];//省
@@ -136,7 +175,6 @@
         this.form.address = val.formattedAddress;//区
       },
       mapComplete(val){
-        console.log('Complete')
         this.form.province = val.province;//省
         this.form.city = val.city;//市
         this.form.area = val.district;//区
@@ -158,24 +196,55 @@
         }
 
       },
+      get(){
+        this.initMap();
+      },
+      initMap(){
+        this.$nextTick(()=>{
+          this.$refs.myMap.$emit('mapInit',{
+            disabled:this.type === 'see',
+            initAddress: this.type === 'add' ? null : `${this.addressSelect.join('')}${this.form.address}`
+          })
+        })
+      }
+    },
+    mounted(){
+      this.$on('show',op => {
+        this.type = op.type;
+        this.info = op.info;
+        if (this.type === 'see') {//查看
+          if (this.info.name) {
+            this.addressSelect = [this.info.province,this.info.city,this.info.area];
+          }
+          for(let key in this.form){
+            this.form[key] = this.info[key];
+          }
+//          this.get();
+        } else {//新增
+          this.form = {
+            address: null,//详细地址
+            area: null,//区
+            city: null,//市
+            province: null,//省
+            name: '',//客户名称
+            contactPerson: {
+              name: null,//联系人
+              phone: null,//联系人方式
+            },
+            remark: null,//备注
+          }
+        }
+        //初始化
+        this.initMap();
+        this.show = true;
+      });
+      this.$on('hide',()=> {this.destroyMap(),this.show = false})
     },
     watch: {
       show(newVal){
         if (newVal) {
-          //初始化
-          if (this.detail.name) {
-            this.form = JSON.parse(JSON.stringify(this.detail));
-            this.addressSelect = [this.detail.province,this.detail.city,this.detail.area];
-          }
-          this.$nextTick(()=>{
-            this.$refs.myMap.$emit('mapInit',{
-              disabled:(this.type !== 'add' && this.selfType !== 'edit'),
-              initAddress: this.type === 'add' ? null : `${this.addressSelect.join('')}${this.form.address}`
-            })
-          })
-//          this.initMap();
-        } else {
-          this.destroyMap();
+
+
         }
       }
     },
