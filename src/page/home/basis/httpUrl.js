@@ -22,8 +22,10 @@ const cusHttpUrl = {
   },
   projectHttpUrl = {
 
-    list:'/house/list'
-
+    list:'/house/list',//列表
+    add:'/house/add',//添加
+    export:'/house/export',//导出(不用)
+    detail:'/house/'
   //项目管理
    
   },

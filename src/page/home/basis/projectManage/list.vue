@@ -1,8 +1,12 @@
 <template>
   <el-main>
     <my-direct @click="handleDirectClick"></my-direct>
-    <add :show="tabIndex != 0"></add>
-    <div v-show="tabIndex === 0" class="page-list">
+    <!-- 添加模块 -->
+    <add :show="tabIndex" @accessSave="addHidden()"></add>
+    <!-- 详情模块 -->
+    <detailMessage :show="tabIndexDetail" :detailId="detailId" :showList="showDetailList" @detailBack="detaiHidden()"></detailMessage>
+    <!-- 合同详情 -->
+    <div v-if="tabIndex === 0 && tabIndexDetail==0" class="page-list">
       <div class="c-search">
         <el-form :inline="true" :model="form" class="demo-form-inline">
           <!-- 省份 -->
@@ -43,31 +47,33 @@
           </el-select>
           <!-- 项目名称 -->
           <el-input v-model="inputProjectName" placeholder="项目名称"></el-input>
+          <el-autocomplete v-if="false" v-model="inputProjectName" :fetch-suggestions="querySearchAsync"  placeholder="请输入内容" @select="handleSelect"></el-autocomplete
 
           <el-form-item>
             <el-button type="primary" @click="find"><i class="iconfont icon-sousuo">&nbsp;</i>查询</el-button>
           </el-form-item>
 
         </el-form>
-        <el-button type="primary" class="c-outBtn">导出</el-button>
+        <exportExcel  :detailData="detailDatas" :headerTitle="headerTitles" :filterName="filterNames"></exportExcel>
+        <!-- <el-button type="primary" class="c-outBtn" @click="exportList">导出</el-button> -->
         <el-button type="primary" class="c-addBtn" @click="add">新增</el-button>
 
       </div>
-      <el-table :data="list" style="width: 100%" v-loading="loading" @selection-change="handleSelectionChange" tooltip-effect="dark">
+      <el-table :data="list" style="width: 100%" v-loading="loading" @selection-change="handleSelectionChange" tooltip-effect="dark" >
         <el-table-column type="selection" width="55"></el-table-column>
         <el-table-column label="项目名称" :show-overflow-tooltip="true" width="110" align="center">
-          <template slot-scope="scope">{{scope.row.houseName}}</template>
+          <el-button type="text" slot-scope="scope" style="color:black;" @click="detailShow(scope.row)">{{scope.row.houseName}}</el-button>
         </el-table-column>
-        <el-table-column label="客户名称" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">{{ scope.row.propName }}</template>
+        <el-table-column label="客户名称" :show-overflow-tooltip="true" align="center" >
+          <template slot-scope="scope"  >{{ scope.row.propName }}</template>
         </el-table-column>
 
-        <el-table-column label="关联合同" :show-overflow-tooltip="true" align="center" width="100">
-          <template slot-scope="scope" style="color:blue;">{{ scope.row.contractNum }}</template>
+        <el-table-column label="关联合同" :show-overflow-tooltip="true" align="center" width="100" >
+          <el-button slot-scope="scope" type="text" style="color:blue;" @click="cpmtractLink(scope.row)">{{ scope.row.contractNum }}</el-button>
         </el-table-column>
 
         <el-table-column label="项目类型" :show-overflow-tooltip="true" align="center">
-          <template slot-scope="scope">{{ scope.row.typeName }}</template>
+          <template slot-scope="scope" >{{ scope.row.typeName }}</template>
         </el-table-column>
 
         <el-table-column label="项目区域" :show-overflow-tooltip="true" align="center" width="80">
@@ -102,7 +108,7 @@
           <template slot-scope="scope">
             <el-button @click="edit(scope.row)" type="primary" size="small">管理电梯</el-button>
             <el-button @click="edit(scope.row)" type="primary" size="small">管理班组  </el-button>
-            <el-button @click="edit(scope.row)" type="primary" size="small">更多</el-button>
+            <el-button @click="detailShow(scope.row)" type="primary" size="small">更多</el-button>
           </template>
         </el-table-column>
       </el-table> 
@@ -121,14 +127,22 @@
   import {projectHttpUrl} from '../httpUrl';
   import myDirect from '@/components/direct';
   import addressDatas from  '@/utils/addressData'
-  import add from '@/page/home/basis/projectManage/add'
-  console.log(add)
+  import add from '@/page/home/basis/projectManage/add'//添加
+  import exportExcel from '@/components/exportExcel'//导出
+  import detailMessage from '@/page/home/basis/projectManage/detail'//详情
+ 
   export default {
     name: 'contractManage',
-    components: {myDirect,add},
+    components: {myDirect, add, exportExcel, detailMessage},
     data(){
       return {
+        //导出插件
+        headerTitles:["项目名称","客户名称","关联合同","项目类型","项目区域","详细地址","电梯数","在保电梯数","开始时间","结束时间"],
+        detailDatas:[],
+        filterNames:["houseName","propName","propId","typeName","province","addressDetail","elevatorNumber","paulNumber","startDate","endDate"],
+
         tab:['','新增合同','编辑合同'],
+        tabIndexDetail:0,
         tabIndex:0,
         list:[],
         form: {
@@ -149,19 +163,94 @@
         customerValue:'',
         inputProjectName:'',
 
-         multipleSelection: [],
+         multipleSelection:[],
+         //导出信息
+         exportMessae:{
+            area: "宁远县",
+             city: "永州市",
+             endTime: 0,
+             houseName: "项目名字1",
+             page: 1,
+             propName: "客户0",
+             province: "湖南省",
+             size: 10,
+             startTime: 0
+         },
+         restaurants:[],
+         timeout:null,
+         //显示详情ID
+         detailId:'',
+         showDetailList:{},
       }
     },
     watch:{
-      // tabIndex(newVal){
-      //   if (newVal > 0) {
-      //     this.$store.commit('PUSHDIRECT',this.tab[this.tabIndex])
-      //   } else {
-      //     this.$store.commit('POPDIRECT');
-      //   }
-      // }
     },
     methods: {
+      //隐藏详情
+      detaiHidden(){
+        this.tabIndexDetail=0;
+      },
+      //点击查看详情
+      detailShow(rowval){
+        console.log(rowval)
+        
+        this.detailId=rowval.id;
+        //获取详情后台数据
+      
+        this.$xttp.get(projectHttpUrl.detail+this.detailId+'/detail').then(res=>{
+          if(res.errorCode==0){
+            Object.assign(this.showDetailList,res.data)
+            if(this.showDetailList.length!=0){
+              this.tabIndexDetail=2;
+            }
+          }
+          
+        })
+      
+      
+        console.log(this.detailId)
+      },
+      //关联合同
+      cpmtractLink(rowval){
+        console.log(rowval)
+      },
+      //输入筛选
+      loadAll() {
+        
+        // console.log(this.list)
+         return this.list
+        console.log(this.list)
+      },
+      querySearchAsync(queryString, cb) {
+              var restaurants = this.restaurants;
+              var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+
+              clearTimeout(this.timeout);
+              this.timeout = setTimeout(() => {
+                cb(results);
+              }, 3000 * Math.random());
+       },
+       createStateFilter(queryString) {
+               return (state) => {
+                console.log(state)
+                 return (state.propName.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+               };
+             },
+       handleSelect(item) {
+               console.log(item);
+       },
+       //导出（不用）
+      exportList(){
+        //后台接口
+        // this.$xttp.post(projectHttpUrl.export,this.exportMessae).then(res=>{
+        //   console.log(res)
+        // })
+
+      },
+      addHidden(val){
+        this.tabIndex =0;
+
+      },
       /**
        * @description 新增
        */
@@ -189,11 +278,17 @@
       edit(row){
 
       },
-      //选择条目
+      //选择条目选择并对数据进行帅选导出
        handleSelectionChange(val) {
-
-              // this.multipleSelection = val;
-              console.log(val)
+               let value=[];
+               this.detailDatas=[];
+              //遍历数组，添加所需要的字段
+              for(let x = 0 ;x <val.length;x++){
+                val[x].addressDetail=val[x].province+val[x].city+val[x].city+val[x].area+val[x].address
+              }
+              Object.assign(this.detailDatas,val)
+            
+              
       },
       //选择省份
       addressChange(){
@@ -204,7 +299,7 @@
                 this.cityValue='';
                 this.areaValue='';
               Object.assign(this.cityList,this.addressData[x].city)
-             console.log(this.areaList)
+            
 
           }
 
@@ -213,12 +308,12 @@
       //选择城市
       cityChange(){
           for(let x = 0; x <this.cityList.length;x++){
-            console.log(this.cityList[x])
+           
             if(this.cityList[x].name==this.cityValue){
               this.areaList=[]
               this.areaValue='';
                Object.assign(this.areaList,this.cityList[x].area)
-               console.log(this.areaList)
+              
             }
           }
       },
@@ -234,26 +329,36 @@
         this.examineDialog = false;
       },
       handleDirectClick(){
+
         this.tabIndex = 0;
+
+        this.tabIndexDetail=0;
+        if(this.tabIndex==0){
+          this.get({})
+        }
+
       },
+      //远程获取数据
       async get(op = {}){
         this.$xttp.post(projectHttpUrl.list,Object.assign({
           page:this.currentPage,
           size:this.size,
         },op)).then(res=>{
-          console.log(res)    
+         
           if (!res.errorCode) {
 
             this.list = res['data'].records;
             // Object.assign(this.list,res.data.records)
-            console.log(this.list)
+          
             this.total = res['data'].total;
+             this.loadAll() 
           }
         })
       }
     },
     mounted(){
         this.get({})
+        this.loadAll() ;
     }
   }
 </script>
